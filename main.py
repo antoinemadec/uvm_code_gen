@@ -11,4 +11,6 @@ args = parser.parse_args()
 
 agents = []
 for f in args.agent_description:
-    agents.append(UvmAgent(f))
+    agent = UvmAgent(f)
+    agent.write_files()
+    agents.append(agent)
