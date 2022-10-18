@@ -1,12 +1,12 @@
-`ifndef {upper_agent_name}_COVERAGE_SV
-`define {upper_agent_name}_COVERAGE_SV
+`ifndef {upper_vip_name}_COVERAGE_SV
+`define {upper_vip_name}_COVERAGE_SV
 
-class {agent_name}_coverage extends uvm_subscriber #({agent_name}_tx);
+class {vip_name}_coverage extends uvm_subscriber #({vip_name}_tx);
 
-  `uvm_component_utils({agent_name}_coverage)
+  `uvm_component_utils({vip_name}_coverage)
 
-  {agent_name}_config m_config;    
-  {agent_name}_tx     m_item;
+  {vip_name}_config m_config;    
+  {vip_name}_tx     m_item;
   bit m_is_covered;
      
   covergroup m_cov;
@@ -18,21 +18,21 @@ class {agent_name}_coverage extends uvm_subscriber #({agent_name}_tx);
   endgroup
 
   extern function new(string name, uvm_component parent);
-  extern function void write(input {agent_name}_tx t);
+  extern function void write(input {vip_name}_tx t);
   extern function void build_phase(uvm_phase phase);
   extern function void report_phase(uvm_phase phase);
 
-endclass : {agent_name}_coverage 
+endclass : {vip_name}_coverage 
 
 
-function {agent_name}_coverage::new(string name, uvm_component parent);
+function {vip_name}_coverage::new(string name, uvm_component parent);
   super.new(name, parent);
   m_is_covered = 0;
   m_cov = new();
 endfunction : new
 
 
-function void {agent_name}_coverage::write(input {agent_name}_tx t);
+function void {vip_name}_coverage::write(input {vip_name}_tx t);
   if (m_config.coverage_enable)
   begin
     m_item = t;
@@ -43,13 +43,13 @@ function void {agent_name}_coverage::write(input {agent_name}_tx t);
 endfunction : write
 
 
-function void {agent_name}_coverage::build_phase(uvm_phase phase);
-  if (!uvm_config_db #({agent_name}_config)::get(this, "", "config", m_config))
+function void {vip_name}_coverage::build_phase(uvm_phase phase);
+  if (!uvm_config_db #({vip_name}_config)::get(this, "", "config", m_config))
     `uvm_error(get_type_name(), "fifo_in config not found")
 endfunction : build_phase
 
 
-function void {agent_name}_coverage::report_phase(uvm_phase phase);
+function void {vip_name}_coverage::report_phase(uvm_phase phase);
   if (m_config.coverage_enable)
     `uvm_info(get_type_name(), $sformatf("Coverage score = %3.1f%%", m_cov.get_inst_coverage()), UVM_MEDIUM)
   else
@@ -57,4 +57,4 @@ function void {agent_name}_coverage::report_phase(uvm_phase phase);
 endfunction : report_phase
 
 
-`endif // {upper_agent_name}_COVERAGE_SV
+`endif // {upper_vip_name}_COVERAGE_SV

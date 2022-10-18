@@ -6,11 +6,11 @@ from uvm_code_gen import *
 parser = argparse.ArgumentParser(
     description="simple template-based UVM code generator")
 
-parser.add_argument("agent_description", nargs="+", help="agent description file used by the template")
+parser.add_argument("vip_config", nargs="+", help="vip configuration file used by the templates")
 args = parser.parse_args()
 
-agents = []
-for f in args.agent_description:
-    agent = UvmAgent(f)
-    agent.write_files()
-    agents.append(agent)
+vips = []
+for f in args.vip_config:
+    vip = UvmVip(f, output_dir="")
+    vip.write_files()
+    vips.append(vip)

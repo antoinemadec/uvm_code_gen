@@ -52,8 +52,8 @@ class InterfacePort(object):
         self.is_clock = is_clock
 
 
-class UvmAgent(object):
-    """parse template and create UVM Agent"""
+class UvmVip(object):
+    """parse template and create UVM Vip"""
 
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
@@ -62,17 +62,19 @@ class UvmAgent(object):
                  description_file: str,
                  output_dir: str = "./output",
                  template_dir: str = ""):
-        self.agent_name = ""
+        # description
+        self.vip_name = ""
         self.if_ports: list[InterfacePort] = []
         self.trans_vars: list[TransactionVariable] = []
-        self.output_dir = Path(output_dir)
+        self.parse_description_file(description_file)
+        # output
+        self.vip_dir = Path(output_dir) / self.vip_name
         if not template_dir:
             template_dir = f"{self.dir_path}/template"
         self.template_dir = Path(template_dir)
-        self.parse_description_file(description_file)
 
     def parse_description_file(self, description_file: str):
-        valid_keywords = ("agent_name", "trans_var", "if_port", "if_clock")
+        valid_keywords = ("vip_name", "trans_var", "if_port", "if_clock")
         if_clock = ""
         with open(description_file, 'r') as f:
             for ln, line_str in enumerate(f):
@@ -97,12 +99,12 @@ class UvmAgent(object):
                 keyword = line[0]
                 args = line[2:]
                 args_str = " ".join(args)
-                if keyword == "agent_name":
+                if keyword == "vip_name":
                     if len(args) != 1:
                         print_file_error(
-                            f"agent_name expect only 1 value", description_file, ln+1, line_str)
+                            f"vip_name expect only 1 value", description_file, ln+1, line_str)
                         exit(1)
-                    self.agent_name = args[0]
+                    self.vip_name = args[0]
                 elif keyword == "trans_var":
                     self.trans_vars.append(TransactionVariable(args_str))
                 elif keyword == "if_port":
@@ -114,17 +116,17 @@ class UvmAgent(object):
         for p in self.if_ports:
             if p.signal_name == if_clock:
                 p.is_clock = True
-        if not self.agent_name:
-            print_error(f"no agent_name found in {description_file}")
+        if not self.vip_name:
+            print_error(f"no vip_name found in {description_file}")
             exit(1)
 
     def fill_template(self, template_name: str, **fmt_values):
-        template_path = self.template_dir / f"agent/{template_name}.sv"
+        template_path = self.template_dir / f"vip/{template_name}.sv"
         if not template_path.exists():
             print_error(f"{template_path} does not exist")
             exit(1)
-        self.output_dir.mkdir(parents=True, exist_ok=True)
-        output_path = self.output_dir / f"{self.agent_name}_{template_name}.sv"
+        self.vip_dir.mkdir(parents=True, exist_ok=True)
+        output_path = self.vip_dir / f"{self.vip_name}_{template_name}.sv"
         with template_path.open('r') as f:
             template = f.read()
         with output_path.open('w') as f:
@@ -191,8 +193,8 @@ class UvmAgent(object):
 
     def write_files(self):
         fmt_values = {
-            "agent_name": self.agent_name,
-            "upper_agent_name": self.agent_name.upper(),
+            "vip_name": self.vip_name,
+            "upper_vip_name": self.vip_name.upper(),
             "coverpoints": self.get_coverpoints(),
             "ports": self.get_ports()
         }

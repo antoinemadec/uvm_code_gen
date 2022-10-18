@@ -1,1 +1,1 @@
-from .agent import UvmAgent
+from .vip import UvmVip
