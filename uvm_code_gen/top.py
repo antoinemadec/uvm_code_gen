@@ -14,13 +14,15 @@ class UvmTop(object):
         self.vips = vips
         self.top_name = top_name
         # output
-        self.top_dir = Path(output_dir) / self.top_name
+        self.output_dir = Path(output_dir)
         self.template_dir = get_template_dir(template_dir)
 
-    def fill_template(self, template_name: str, **fmt_values):
-        template_path = self.template_dir / f"top/{template_name}.sv"
-        output_path = self.top_dir / f"{self.top_name}_{template_name}.sv"
-        fill_template(output_path, template_path, **fmt_values)
+    def fill_template(self, template_rel_path: str, **fmt_values):
+        trp_list = template_rel_path.split('/')
+        output_rel_path = template_rel_path
+        if  trp_list[0] == "top":
+            output_rel_path = f"{self.top_name}/{'/'.join(trp_list[1:-1])}/{self.top_name}_{trp_list[-1]}"
+        fill_template(self.output_dir / output_rel_path, self.template_dir / template_rel_path, **fmt_values)
 
     def get_vip_imports(self):
         return "\n".join([f"  import {v.vip_name}_pkg::*;" for v in self.vips])
@@ -38,7 +40,7 @@ class UvmTop(object):
         return "\n\n".join(configs)
 
     def get_agent_declarations(self):
-        return "\n".join([f"  {v.vip_name}_agent   m_{v.vip_name}_agent;" for v in self.vips])
+        return "\n".join([f"  {v.vip_name}_agent m_{v.vip_name}_agent;" for v in self.vips])
 
     def get_seq_body_core(self):
         seqs = []
@@ -53,15 +55,15 @@ class UvmTop(object):
                         f"        seq.m_config = m_{v.vip_name}_agent.m_config;\n" +
                         f"        seq.set_starting_phase( get_starting_phase() );\n" +
                         f"        seq.start(m_{v.vip_name}_agent.m_sequencer, this);\n" +
-                        f"      end\n")
-        return "".join(seqs)
+                        f"      end")
+        return "\n".join(seqs)
 
     def get_vip_declarations(self):
         declarations = []
         for v in self.vips:
-            declarations.append(f"  {v.vip_name}_config   = m_{v.vip_name}_config;\n" +
-                                f"  {v.vip_name}_agent    = m_{v.vip_name}_agent;\n" +
-                                f"  {v.vip_name}_coverage = m_{v.vip_name}_coverage;")
+            declarations.append(f"  {v.vip_name}_config   m_{v.vip_name}_config;\n" +
+                                f"  {v.vip_name}_agent    m_{v.vip_name}_agent;\n" +
+                                f"  {v.vip_name}_coverage m_{v.vip_name}_coverage;")
         return "\n\n".join(declarations)
 
     def get_env_build_phase_core(self):
@@ -85,6 +87,38 @@ class UvmTop(object):
     def get_env_run_phase_core(self):
         return "\n".join([f"  vseq.m_{v.vip_name}_agent = m_{v.vip_name}_agent;" for v in self.vips])
 
+    def get_xrun_core(self):
+        core = []
+        core += [f"  +incdir+$VIP_DIR/{v.vip_name} \\" for v in self.vips]
+        core.append(f"  +incdir+$TOP_DIR \\")
+        core.append(f"  +incdir+$TOP_DIR/test \\")
+        core.append(f"  +incdir+$TOP_DIR/tb \\")
+        core.append(f"  -F $BIN_DIR/dut_files.f \\")
+        for v in self.vips:
+            for s in ("pkg", "if"):
+                core.append(f"  $VIP_DIR/{v.vip_name}/{v.vip_name}_{s}.sv \\")
+        core.append(f"  $TOP_DIR/{self.top_name}_pkg.sv \\")
+        core.append(f"  $TOP_DIR/test/{self.top_name}_test_pkg.sv \\")
+        core.append(f"  $TOP_DIR/tb/{self.top_name}_th.sv \\")
+        core.append(f"  $TOP_DIR/tb/{self.top_name}_tb.sv \\")
+        core.append(f"  +UVM_TESTNAME={self.top_name}_test  $*")
+        return "\n".join(core)
+    
+    def get_interface_and_dut_instantiation(self):
+        inst = []
+        inst += [f"  {v.vip_name}_if {v.vip_name}_if();" for v in self.vips]
+        inst.append("")
+        dut_inst = []
+        for v in self.vips:
+            for p in v.if_ports:
+                if p.is_clock:
+                    inst.append(f"  assign {v.vip_name}_if.clk = clk;")
+                else:
+                    dut_inst.append(f"    .{p.signal_name} ({v.vip_name}_if.{p.signal_name})")
+        dut_inst_str = ",\n".join(dut_inst)
+        inst.append(f"\n  dut dut(\n    .clk (clk),\n    .rst (rst),\n{dut_inst_str}\n  );")
+        return "\n".join(inst)
+
     def write_files(self):
         fmt_values = {
             "top_name": self.top_name,
@@ -97,9 +131,16 @@ class UvmTop(object):
             "vip_declarations": self.get_vip_declarations(),
             "env_build_phase_core": self.get_env_build_phase_core(),
             "env_connect_phase_core": self.get_env_connect_phase_core(),
-            "env_run_phase_core": self.get_env_run_phase_core()
+            "env_run_phase_core": self.get_env_run_phase_core(),
+            "xrun_core": self.get_xrun_core(),
+            "interface_and_dut_instantiation": self.get_interface_and_dut_instantiation()
         }
-        self.fill_template("config", **fmt_values)
-        self.fill_template("env", **fmt_values)
-        self.fill_template("seq_lib", **fmt_values)
-        self.fill_template("pkg", **fmt_values)
+        self.fill_template("top/config.sv", **fmt_values)
+        self.fill_template("top/env.sv", **fmt_values)
+        self.fill_template("top/seq_lib.sv", **fmt_values)
+        self.fill_template("top/pkg.sv", **fmt_values)
+        self.fill_template("top/tb/tb.sv", **fmt_values)
+        self.fill_template("top/tb/th.sv", **fmt_values)
+        self.fill_template("top/test/test.sv", **fmt_values)
+        self.fill_template("top/test/test_pkg.sv", **fmt_values)
+        self.fill_template("bin/run", **fmt_values)

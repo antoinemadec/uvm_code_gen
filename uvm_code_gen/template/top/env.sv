@@ -28,7 +28,7 @@ function void {top_name}_env::build_phase(uvm_phase phase);
   `uvm_info(get_type_name(), "In build_phase", UVM_HIGH)
 
   if (!uvm_config_db #({top_name}_config)::get(this, "", "config", m_config)) 
-    `uvm_error(get_type_name(), "Unable to get {top_name}_config")
+    `uvm_fatal(get_type_name(), "Unable to get {top_name}_config")
 
 {env_build_phase_core}
 endfunction : build_phase

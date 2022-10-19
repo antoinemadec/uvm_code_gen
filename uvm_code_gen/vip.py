@@ -112,7 +112,7 @@ class UvmVip(object):
             definition = var.definition
             is_array = var.is_unpacked_array
             trans_vars.append(f"  {definition}")
-            tx_do_copy.append(f"  {name} = rhs_.{name}")
+            tx_do_copy.append(f"  {name} = rhs_.{name};")
             if is_array:
                 foreach_str = f"  foreach ({name}[i])\n"
                 tx_do_compare.append(foreach_str +

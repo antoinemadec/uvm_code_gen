@@ -27,11 +27,13 @@ def fill_template(output_path: Path, template_path: Path, **fmt_values):
     if not template_path.exists():
         print_error(f"{template_path} does not exist")
         exit(1)
+    template_stat = os.lstat(template_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with template_path.open('r') as f:
         template = f.read()
     with output_path.open('w') as f:
         f.write(template.format(**fmt_values))
+    os.chmod(output_path, template_stat.st_mode)
 
 
 class SvCode(object):

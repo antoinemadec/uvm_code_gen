@@ -1,34 +1,31 @@
-`ifndef TOP_TEST_SV
-`define TOP_TEST_SV
+`ifndef {upper_top_name}_TEST_SV
+`define {upper_top_name}_TEST_SV
 
-class top_test extends uvm_test;
+class {top_name}_test extends uvm_test;
 
-  `uvm_component_utils(top_test)
+  `uvm_component_utils({top_name}_test)
 
-  top_env m_env;
+  {top_name}_env m_env;
 
   extern function new(string name, uvm_component parent);
 
   extern function void build_phase(uvm_phase phase);
 
-endclass : top_test
+endclass : {top_name}_test
 
 
-function top_test::new(string name, uvm_component parent);
+function {top_name}_test::new(string name, uvm_component parent);
   super.new(name, parent);
 endfunction : new
 
 
-function void top_test::build_phase(uvm_phase phase);
+function void {top_name}_test::build_phase(uvm_phase phase);
 
-  // You could modify any test-specific configuration object variables here
+  // you can modify any test-specific configuration object variables here,
+  // or override the default sequence
 
-
-
-  m_env = top_env::type_id::create("m_env", this);
-
+  m_env = {top_name}_env::type_id::create("m_env", this);
 endfunction : build_phase
 
 
-`endif // TOP_TEST_SV
-
+`endif // {upper_top_name}_TEST_SV

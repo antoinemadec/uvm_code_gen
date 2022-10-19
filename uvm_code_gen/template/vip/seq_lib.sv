@@ -24,7 +24,7 @@ task {vip_name}_default_seq::body();
   req = {vip_name}_tx::type_id::create("req");
   start_item(req); 
   if ( !req.randomize() )
-    `uvm_error(get_type_name(), "Failed to randomize transaction")
+    `uvm_fatal(get_type_name(), "Failed to randomize transaction")
   finish_item(req); 
 
   `uvm_info(get_type_name(), "Default sequence completed", UVM_HIGH)

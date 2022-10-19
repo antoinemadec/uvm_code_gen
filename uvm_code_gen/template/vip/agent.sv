@@ -32,7 +32,7 @@ endfunction : new
 function void {vip_name}_agent::build_phase(uvm_phase phase);
 
   if (!uvm_config_db #({vip_name}_config)::get(this, "", "config", m_config))
-    `uvm_error(get_type_name(), "{vip_name} config not found")
+    `uvm_fatal(get_type_name(), "{vip_name} config not found")
 
   m_monitor = {vip_name}_monitor::type_id::create("m_monitor", this);
 

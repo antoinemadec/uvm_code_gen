@@ -27,7 +27,6 @@ endfunction : new
 task {top_name}_default_seq::body();
   `uvm_info(get_type_name(), "Default sequence starting", UVM_HIGH)
 
-
   repeat (m_seq_count)
   begin
     fork

@@ -45,7 +45,7 @@ endfunction : write
 
 function void {vip_name}_coverage::build_phase(uvm_phase phase);
   if (!uvm_config_db #({vip_name}_config)::get(this, "", "config", m_config))
-    `uvm_error(get_type_name(), "fifo_in config not found")
+    `uvm_fatal(get_type_name(), "fifo_in config not found")
 endfunction : build_phase
 
 

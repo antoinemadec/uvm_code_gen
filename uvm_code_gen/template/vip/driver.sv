@@ -35,4 +35,9 @@ task {vip_name}_driver::run_phase(uvm_phase phase);
 endtask : run_phase
 
 
+task {vip_name}_driver::do_drive();
+  `uvm_fatal(get_type_name(), "TODO: fill do_drive()");
+endtask : do_drive
+
+
 `endif // {upper_vip_name}_DRIVER_SV

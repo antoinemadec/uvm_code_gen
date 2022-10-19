@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -e
+
+OUTPUT_DIR="./output"
+BIN_DIR="$(realpath .)"
+VIP_DIR="$(realpath ../vip)"
+TOP_DIR="$(realpath ../{top_name})"
+
+
+#--------------------------------------------------------------
+# functions
+#--------------------------------------------------------------
+error() {{
+  >&2 echo "ERROR: $@"
+  exit 1
+}}
+
+
+#--------------------------------------------------------------
+# execution
+#--------------------------------------------------------------
+[ -d "$VIP_DIR" ] || error "$VIP_DIR does not exist"
+[ -d "$TOP_DIR" ] || error "$TOP_DIR does not exist"
+
+mkdir -p output
+cd output
+
+xrun -vtimescale 1ns/1ps -uvmhome $(ncroot)/tools/methodology/UVM/CDNS-1.2 \
+{xrun_core}
