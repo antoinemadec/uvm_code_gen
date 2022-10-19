@@ -4,7 +4,6 @@
 class {vip_name}_tx extends uvm_sequence_item; 
 
   `uvm_object_utils({vip_name}_tx)
-  `uvm_field_int
 
   // transaction variables
 {trans_vars}

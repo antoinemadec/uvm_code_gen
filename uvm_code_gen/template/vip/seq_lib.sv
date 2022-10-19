@@ -9,6 +9,7 @@ class {vip_name}_default_seq extends uvm_sequence #({vip_name}_tx);
 
   extern function new(string name = "");
   extern task body();
+
 endclass : {vip_name}_default_seq
 
 

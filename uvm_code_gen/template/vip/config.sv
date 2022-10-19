@@ -2,7 +2,8 @@
 `define {upper_vip_name}_CONFIG_SV
 
 class {vip_name}_config extends uvm_object;
-  // Do not register config class with the factory
+
+  // do not register config class with the factory
 
   virtual {vip_name}_if vif;
                   
