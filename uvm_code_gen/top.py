@@ -92,7 +92,6 @@ class UvmTop(object):
         core += [f"  +incdir+$VIP_DIR/{v.vip_name} \\" for v in self.vips]
         core.append(f"  +incdir+$TOP_DIR \\")
         core.append(f"  +incdir+$TOP_DIR/test \\")
-        core.append(f"  +incdir+$TOP_DIR/tb \\")
         core.append(f"  -F $BIN_DIR/dut_files.f \\")
         for v in self.vips:
             for s in ("pkg", "if"):

@@ -26,5 +26,5 @@ error() {{
 mkdir -p output
 cd output
 
-xrun -vtimescale 1ns/1ps -uvmhome $(ncroot)/tools/methodology/UVM/CDNS-1.2 \
+xrun -q -vtimescale 1ns/1ps -uvmhome $(ncroot)/tools/methodology/UVM/CDNS-1.2 \
 {xrun_core}

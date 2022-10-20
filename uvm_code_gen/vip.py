@@ -36,7 +36,6 @@ class UvmVip(object):
 
     def parse_description_file(self, description_file: str):
         valid_keywords = ("vip_name", "trans_var", "if_port", "if_clock")
-        if_clock = ""
         with open(description_file, 'r') as f:
             for ln, line_str in enumerate(f):
                 line_str = line_str.strip()
@@ -71,12 +70,8 @@ class UvmVip(object):
                 elif keyword == "if_port":
                     self.if_ports.append(InterfacePort(args_str))
                 elif keyword == "if_clock":
-                    if_clock = args[0]
-
-        # post processing and final checks
-        for p in self.if_ports:
-            if p.signal_name == if_clock:
-                p.is_clock = True
+                    self.if_ports.append(InterfacePort(args_str, is_clock=True))
+        # final checks
         if not self.vip_name:
             print_error(f"no vip_name found in {description_file}")
             exit(1)
