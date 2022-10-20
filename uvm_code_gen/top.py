@@ -21,7 +21,8 @@ class UvmTop(object):
         trp_list = template_rel_path.split('/')
         output_rel_path = template_rel_path
         if  trp_list[0] == "top":
-            output_rel_path = f"{self.top_name}/{'/'.join(trp_list[1:-1])}/{self.top_name}_{trp_list[-1]}"
+            top = self.top_name
+            output_rel_path = f"{top}/{'/'.join(trp_list[1:-1])}/{top}_{trp_list[-1]}"
         fill_template(self.output_dir / output_rel_path, self.template_dir / template_rel_path, **fmt_values)
 
     def get_vip_imports(self):
@@ -33,10 +34,11 @@ class UvmTop(object):
     def get_config_new_core(self):
         configs = []
         for v in self.vips:
-            configs.append(f"  m_{v.vip_name}_config = new(\"m_{v.vip_name}_config\");\n" +
-                           f"  m_{v.vip_name}_config.is_active = UVM_ACTIVE;\n" +
-                           f"  m_{v.vip_name}_config.checks_enable = 1;\n" +
-                           f"  m_{v.vip_name}_config.coverage_enable = 1;")
+            vip = v.vip_name
+            configs.append(f"  m_{vip}_config = new(\"m_{vip}_config\");\n" +
+                           f"  m_{vip}_config.is_active = UVM_ACTIVE;\n" +
+                           f"  m_{vip}_config.checks_enable = 1;\n" +
+                           f"  m_{vip}_config.coverage_enable = 1;")
         return "\n\n".join(configs)
 
     def get_agent_declarations(self):
@@ -45,44 +47,48 @@ class UvmTop(object):
     def get_seq_body_core(self):
         seqs = []
         for v in self.vips:
-            seqs.append(f"      if (m_{v.vip_name}_agent.m_config.is_active == UVM_ACTIVE)\n" +
+            vip = v.vip_name
+            seqs.append(f"      if (m_{vip}_agent.m_config.is_active == UVM_ACTIVE)\n" +
                         f"      begin\n" +
-                        f"        {v.vip_name}_default_seq seq;\n" +
-                        f"        seq = {v.vip_name}_default_seq::type_id::create(\"seq\");\n" +
-                        f"        seq.set_item_context(this, m_{v.vip_name}_agent.m_sequencer);\n" +
+                        f"        {vip}_default_seq seq;\n" +
+                        f"        seq = {vip}_default_seq::type_id::create(\"seq\");\n" +
+                        f"        seq.set_item_context(this, m_{vip}_agent.m_sequencer);\n" +
                         f"        if ( !seq.randomize() )\n" +
                         f"          `uvm_error(get_type_name(), \"Failed to randomize sequence\")\n" +
-                        f"        seq.m_config = m_{v.vip_name}_agent.m_config;\n" +
+                        f"        seq.m_config = m_{vip}_agent.m_config;\n" +
                         f"        seq.set_starting_phase( get_starting_phase() );\n" +
-                        f"        seq.start(m_{v.vip_name}_agent.m_sequencer, this);\n" +
+                        f"        seq.start(m_{vip}_agent.m_sequencer, this);\n" +
                         f"      end")
         return "\n".join(seqs)
 
     def get_vip_declarations(self):
         declarations = []
         for v in self.vips:
-            declarations.append(f"  {v.vip_name}_config   m_{v.vip_name}_config;\n" +
-                                f"  {v.vip_name}_agent    m_{v.vip_name}_agent;\n" +
-                                f"  {v.vip_name}_coverage m_{v.vip_name}_coverage;")
+            vip = v.vip_name
+            declarations.append(f"  {vip}_config   m_{vip}_config;\n" +
+                                f"  {vip}_agent    m_{vip}_agent;\n" +
+                                f"  {vip}_coverage m_{vip}_coverage;")
         return "\n\n".join(declarations)
 
     def get_env_build_phase_core(self):
         core = []
         for v in self.vips:
-            core.append(f"  m_{v.vip_name}_config = m_config.m_{v.vip_name}_config;\n" +
-                        f"  uvm_config_db #({v.vip_name}_config)::set(this, \"m_{v.vip_name}_agent\", \"config\", m_{v.vip_name}_config);\n" +
-                        f"  if (m_{v.vip_name}_config.is_active == UVM_ACTIVE )\n" +
-                        f"    uvm_config_db #({v.vip_name}_config)::set(this, \"m_{v.vip_name}_agent.m_sequencer\", \"config\", m_{v.vip_name}_config);\n" +
-                        f"  uvm_config_db #({v.vip_name}_config)::set(this, \"m_{v.vip_name}_coverage\", \"config\", m_{v.vip_name}_config);\n\n" +
-                        f"  m_{v.vip_name}_agent = {v.vip_name}_agent::type_id::create(\"m_{v.vip_name}_agent\", this);\n" +
-                        f"  m_{v.vip_name}_coverage = {v.vip_name}_coverage::type_id::create(\"m_{v.vip_name}_coverage\", this);")
+            vip = v.vip_name
+            core.append(f"  m_{vip}_config = m_config.m_{vip}_config;\n" +
+                        f"  uvm_config_db #({vip}_config)::set(this, \"m_{vip}_agent\", \"config\", m_{vip}_config);\n" +
+                        f"  if (m_{vip}_config.is_active == UVM_ACTIVE )\n" +
+                        f"    uvm_config_db #({vip}_config)::set(this, \"m_{vip}_agent.m_sequencer\", \"config\", m_{vip}_config);\n" +
+                        f"  uvm_config_db #({vip}_config)::set(this, \"m_{vip}_coverage\", \"config\", m_{vip}_config);\n\n" +
+                        f"  m_{vip}_agent = {vip}_agent::type_id::create(\"m_{vip}_agent\", this);\n" +
+                        f"  m_{vip}_coverage = {vip}_coverage::type_id::create(\"m_{vip}_coverage\", this);")
         return "\n\n".join(core)
 
     def get_env_connect_phase_core(self):
         core = []
         for v in self.vips:
-            core.append(f"  m_{v.vip_name}_agent.analysis_port.connect(m_{v.vip_name}_coverage.analysis_export);\n" +
-                        f"  m_{v.vip_name}_agent.analysis_port.connect(m_scoreboard.{v.vip_name}_to_scoreboard);")
+            vip = v.vip_name
+            core.append(f"  m_{vip}_agent.analysis_port.connect(m_{vip}_coverage.analysis_export);\n" +
+                        f"  m_{vip}_agent.analysis_port.connect(m_scoreboard.{vip}_to_scoreboard);")
         return "\n\n".join(core)
 
     def get_env_run_phase_core(self):
@@ -93,9 +99,9 @@ class UvmTop(object):
         sb_analysis_imp_declaration = []
         sb_analysis_imp_new = []
         sb_writes = []
+        top = self.top_name
         for v in self.vips:
             vip = v.vip_name
-            top = self.top_name
             sb_analysis_imp_macros.append(f"`uvm_analysis_imp_decl(_from_{vip})")
             sb_analysis_imp_declaration.append(
                 f"  uvm_analysis_imp_from_{vip} #({vip}_tx, {top}_scoreboard) {vip}_to_scoreboard;")
@@ -120,14 +126,16 @@ class UvmTop(object):
         core.append(f"  +incdir+$TOP_DIR \\")
         core.append(f"  +incdir+$TOP_DIR/test \\")
         core.append(f"  -F $BIN_DIR/dut_files.f \\")
+        top = self.top_name
         for v in self.vips:
+            vip = v.vip_name
             for s in ("pkg", "if"):
-                core.append(f"  $VIP_DIR/{v.vip_name}/{v.vip_name}_{s}.sv \\")
-        core.append(f"  $TOP_DIR/{self.top_name}_pkg.sv \\")
-        core.append(f"  $TOP_DIR/test/{self.top_name}_test_pkg.sv \\")
-        core.append(f"  $TOP_DIR/tb/{self.top_name}_th.sv \\")
-        core.append(f"  $TOP_DIR/tb/{self.top_name}_tb.sv \\")
-        core.append(f"  +UVM_TESTNAME={self.top_name}_test  $*")
+                core.append(f"  $VIP_DIR/{vip}/{vip}_{s}.sv \\")
+        core.append(f"  $TOP_DIR/{top}_pkg.sv \\")
+        core.append(f"  $TOP_DIR/test/{top}_test_pkg.sv \\")
+        core.append(f"  $TOP_DIR/tb/{top}_th.sv \\")
+        core.append(f"  $TOP_DIR/tb/{top}_tb.sv \\")
+        core.append(f"  +UVM_TESTNAME={top}_test  $*")
         return "\n".join(core)
     
     def get_interface_and_dut_instantiation(self):
@@ -136,11 +144,12 @@ class UvmTop(object):
         inst.append("")
         dut_inst = []
         for v in self.vips:
+            vip = v.vip_name
             for p in v.if_ports:
                 if p.is_clock:
-                    inst.append(f"  assign {v.vip_name}_if.clk = clk;")
+                    inst.append(f"  assign {vip}_if.clk = clk;")
                 else:
-                    dut_inst.append(f"    .{p.signal_name} ({v.vip_name}_if.{p.signal_name})")
+                    dut_inst.append(f"    .{p.signal_name} ({vip}_if.{p.signal_name})")
         dut_inst_str = ",\n".join(dut_inst)
         inst.append(f"\n  dut dut(\n    .clk (clk),\n    .rst (rst),\n{dut_inst_str}\n  );")
         return "\n".join(inst)
