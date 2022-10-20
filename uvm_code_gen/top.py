@@ -81,11 +81,38 @@ class UvmTop(object):
     def get_env_connect_phase_core(self):
         core = []
         for v in self.vips:
-            core.append(f"  m_{v.vip_name}_agent.analysis_port.connect(m_{v.vip_name}_coverage.analysis_export);")
+            core.append(f"  m_{v.vip_name}_agent.analysis_port.connect(m_{v.vip_name}_coverage.analysis_export);\n" +
+                        f"  m_{v.vip_name}_agent.analysis_port.connect(m_scoreboard.{v.vip_name}_to_scoreboard);")
         return "\n\n".join(core)
 
     def get_env_run_phase_core(self):
         return "\n".join([f"  vseq.m_{v.vip_name}_agent = m_{v.vip_name}_agent;" for v in self.vips])
+
+    def get_sb_fmt_values(self) -> dict[str, str]:
+        sb_analysis_imp_macros = []
+        sb_analysis_imp_declaration = []
+        sb_analysis_imp_new = []
+        sb_writes = []
+        for v in self.vips:
+            vip = v.vip_name
+            top = self.top_name
+            sb_analysis_imp_macros.append(f"`uvm_analysis_imp_decl(_from_{vip})")
+            sb_analysis_imp_declaration.append(
+                f"  uvm_analysis_imp_from_{vip} #({vip}_tx, {top}_scoreboard) {vip}_to_scoreboard;")
+            sb_analysis_imp_new.append(
+                f"     {vip}_to_scoreboard = new(\"{vip}_to_scoreboard\", this);")
+            sb_writes.append(
+                f"  virtual function void write_from_{vip}(input {vip}_tx pkt);\n" +
+                f"    `uvm_info(get_type_name(), $sformatf(\"Received {vip}_tx: %s\",\n" +
+                f"      pkt.sprint( uvm_default_line_printer )), UVM_HIGH)\n" +
+                f"  endfunction: write_from_{vip}")
+        d = {
+            "sb_analysis_imp_macros": "\n".join(sb_analysis_imp_macros),
+            "sb_analysis_imp_declaration": "\n".join(sb_analysis_imp_declaration),
+            "sb_analysis_imp_new": "\n".join(sb_analysis_imp_new),
+            "sb_writes": "\n\n\n".join(sb_writes)
+        }
+        return d
 
     def get_xrun_core(self):
         core = []
@@ -134,8 +161,10 @@ class UvmTop(object):
             "xrun_core": self.get_xrun_core(),
             "interface_and_dut_instantiation": self.get_interface_and_dut_instantiation()
         }
+        fmt_values = {**fmt_values, **self.get_sb_fmt_values()}
         self.fill_template("top/config.sv", **fmt_values)
         self.fill_template("top/env.sv", **fmt_values)
+        self.fill_template("top/scoreboard.sv", **fmt_values)
         self.fill_template("top/seq_lib.sv", **fmt_values)
         self.fill_template("top/pkg.sv", **fmt_values)
         self.fill_template("top/tb/tb.sv", **fmt_values)

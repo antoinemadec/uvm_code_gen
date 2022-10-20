@@ -7,10 +7,11 @@ class {top_name}_env extends uvm_env;
 
   extern function new(string name, uvm_component parent);
 
+  {top_name}_config     m_config;
+  {top_name}_scoreboard m_scoreboard;
+
 {vip_declarations}
 
-  {top_name}_config m_config;
-          
   extern function void build_phase(uvm_phase phase);
   extern function void connect_phase(uvm_phase phase);
   extern function void end_of_elaboration_phase(uvm_phase phase);
@@ -29,6 +30,9 @@ function void {top_name}_env::build_phase(uvm_phase phase);
 
   if (!uvm_config_db #({top_name}_config)::get(this, "", "config", m_config)) 
     `uvm_fatal(get_type_name(), "Unable to get {top_name}_config")
+
+  uvm_config_db #({top_name}_config)::set(this, "m_scoreboard", "config", m_config);
+  m_scoreboard = {top_name}_scoreboard::type_id::create("m_scoreboard",this);
 
 {env_build_phase_core}
 endfunction : build_phase
@@ -60,7 +64,6 @@ task {top_name}_env::run_phase(uvm_phase phase);
   vseq.m_config = m_config;        
   vseq.set_starting_phase(phase);
   vseq.start(null);
-
 endtask : run_phase
 
 
