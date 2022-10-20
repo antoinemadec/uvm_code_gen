@@ -145,11 +145,12 @@ class UvmTop(object):
         dut_inst = []
         for v in self.vips:
             vip = v.vip_name
+            if v.if_clock:
+                clock = v.if_clock.signal_name
+                inst.append(f"  assign {vip}_if.{clock} = clk;")
             for p in v.if_ports:
-                if p.is_clock:
-                    inst.append(f"  assign {vip}_if.clk = clk;")
-                else:
-                    dut_inst.append(f"    .{p.signal_name} ({vip}_if.{p.signal_name})")
+                port = p.signal_name
+                dut_inst.append(f"    .{port} ({vip}_if.{port})")
         dut_inst_str = ",\n".join(dut_inst)
         inst.append(f"\n  dut dut(\n    .clk (clk),\n    .rst (rst),\n{dut_inst_str}\n  );")
         return "\n".join(inst)

@@ -8,7 +8,7 @@ interface {vip_name}_if();
 
   import {vip_name}_pkg::*;
 
-{ports}
+{ports_and_clocking_blocks}
 
 endinterface : {vip_name}_if
 

@@ -12,10 +12,9 @@ class TransactionVariable(object):
 
 
 class InterfacePort(object):
-    def __init__(self, definition: str, is_clock=False):
+    def __init__(self, definition: str):
         self.definition = definition
         self.signal_name = SvCode(definition).get_signal_name()
-        self.is_clock = is_clock
 
 
 class UvmVip(object):
@@ -28,6 +27,7 @@ class UvmVip(object):
         # description
         self.vip_name = ""
         self.if_ports: list[InterfacePort] = []
+        self.if_clock: InterfacePort | None = None
         self.trans_vars: list[TransactionVariable] = []
         self.parse_description_file(description_file)
         # output
@@ -70,7 +70,7 @@ class UvmVip(object):
                 elif keyword == "if_port":
                     self.if_ports.append(InterfacePort(args_str))
                 elif keyword == "if_clock":
-                    self.if_ports.append(InterfacePort(args_str, is_clock=True))
+                    self.if_clock = InterfacePort(args_str)
         # final checks
         if not self.vip_name:
             print_error(f"no vip_name found in {description_file}")
@@ -89,9 +89,21 @@ class UvmVip(object):
                 f"    cp_{var_name}: coverpoint m_item.{var_name};")
         return "\n".join(coverpoints)
 
-    def get_ports(self) -> str:
-        ports = [f"  {p.definition}" for p in self.if_ports]
-        return "\n".join(ports)
+    def get_ports_and_clocking_blocks(self) -> str:
+        # ports
+        ports = self.if_ports
+        if self.if_clock:
+            ports = [self.if_clock] + ports
+        pcb = [f"  {p.definition}" for p in ports]
+        # clocking blocks
+        if self.if_clock:
+            clock = self.if_clock.signal_name
+            for cb in ("drv", "mon"):
+                pcb.append(
+                    f"\n  clocking cb_{cb} @(posedge {clock});\n" +
+                    "\n".join([f"    input {p.signal_name};" for p in self.if_ports]) +
+                    f"\n  endclocking : cb_{cb}")
+        return "\n".join(pcb)
 
     def get_tx_fmt_values(self) -> dict[str, str]:
         trans_vars = []
@@ -146,7 +158,7 @@ class UvmVip(object):
             "vip_name": self.vip_name,
             "upper_vip_name": self.vip_name.upper(),
             "coverpoints": self.get_coverpoints(),
-            "ports": self.get_ports()
+            "ports_and_clocking_blocks": self.get_ports_and_clocking_blocks(),
         }
         fmt_values = {**fmt_values, **self.get_tx_fmt_values()}
         self.fill_template("agent", **fmt_values)

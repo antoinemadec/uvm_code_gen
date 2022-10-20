@@ -2,7 +2,6 @@
 Simple template-based UVM code generator
 
 ## TODO
-  - add clocking blocks in interface
   - complete README
   - change convert2string() formating ?
   - code formatting ?
