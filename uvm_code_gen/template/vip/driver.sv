@@ -28,7 +28,7 @@ task {vip_name}_driver::run_phase(uvm_phase phase);
   forever
   begin
     seq_item_port.get_next_item(req);
-      `uvm_info(get_type_name(), {{"req item\n",req.sprint}}, UVM_HIGH)
+    `uvm_info(get_type_name(), {{"req item\n",req.sprint}}, UVM_DEBUG)
     do_drive();
     seq_item_port.item_done();
   end
