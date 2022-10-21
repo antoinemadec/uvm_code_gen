@@ -46,6 +46,7 @@ Generated files are in `./output`.
 ## TODO
   - support master + slave VIP
   - add top.conf to map vip -> instance(s)
+  - pass coverage in top_config's new() ?
   - change convert2string() formatting ?
   - code formatting ?
   - when to prefix members by m_ ?

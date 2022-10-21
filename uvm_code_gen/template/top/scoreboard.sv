@@ -15,7 +15,7 @@ class {top_name}_scoreboard extends uvm_scoreboard;
     if (!uvm_config_db #({top_name}_config)::get(this, "", "config", m_config))
       `uvm_fatal(get_type_name(), "Unable to get {top_name}_config")
 {sb_analysis_imp_new}
-   endfunction : new
+  endfunction : new
 
 
 {sb_writes}

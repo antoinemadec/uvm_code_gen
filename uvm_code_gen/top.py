@@ -108,7 +108,7 @@ class UvmTop(object):
             sb_analysis_imp_declaration.append(
                 f"  uvm_analysis_imp_from_{vip} #({vip}_tx, {top}_scoreboard) {vip}_to_scoreboard;")
             sb_analysis_imp_new.append(
-                f"     {vip}_to_scoreboard = new(\"{vip}_to_scoreboard\", this);")
+                f"    {vip}_to_scoreboard = new(\"{vip}_to_scoreboard\", this);")
             sb_writes.append(
                 f"  virtual function void write_from_{vip}(input {vip}_tx pkt);\n" +
                 f"    `uvm_info(get_type_name(), $sformatf(\"Received {vip}_tx: %s\",\n" +
