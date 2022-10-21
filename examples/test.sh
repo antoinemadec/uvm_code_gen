@@ -10,7 +10,7 @@ rm -rf output
 ./main.py ./examples/fifo_*.conf
 
 # create dut_files.f
-dut_path="(realpath ./examples/dut/fifo.sv)"
+dut_path="$(realpath ./examples/dut/fifo.sv)"
 echo "$dut_path" > ./output/bin/dut_files.f
 
 # edit dut instatiation
