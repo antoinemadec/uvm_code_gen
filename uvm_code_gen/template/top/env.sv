@@ -17,7 +17,7 @@ class {top_name}_env extends uvm_env;
   extern function void end_of_elaboration_phase(uvm_phase phase);
   extern task          run_phase(uvm_phase phase);
 
-endclass : {top_name}_env 
+endclass : {top_name}_env
 
 
 function {top_name}_env::new(string name, uvm_component parent);
@@ -28,7 +28,7 @@ endfunction : new
 function void {top_name}_env::build_phase(uvm_phase phase);
   `uvm_info(get_type_name(), "In build_phase", UVM_HIGH)
 
-  if (!uvm_config_db #({top_name}_config)::get(this, "", "config", m_config)) 
+  if (!uvm_config_db #({top_name}_config)::get(this, "", "config", m_config))
     `uvm_fatal(get_type_name(), "Unable to get {top_name}_config")
 
   uvm_config_db #({top_name}_config)::set(this, "m_scoreboard", "config", m_config);
@@ -61,7 +61,7 @@ task {top_name}_env::run_phase(uvm_phase phase);
   if ( !vseq.randomize() )
     `uvm_fatal(get_type_name(), "Failed to randomize virtual sequence")
 {env_run_phase_core}
-  vseq.m_config = m_config;        
+  vseq.m_config = m_config;
   vseq.set_starting_phase(phase);
   vseq.start(null);
 endtask : run_phase

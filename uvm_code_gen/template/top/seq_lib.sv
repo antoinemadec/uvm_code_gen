@@ -6,7 +6,7 @@ class {top_name}_default_seq extends uvm_sequence #(uvm_sequence_item);
   `uvm_object_utils({top_name}_default_seq)
 
   {top_name}_config m_config;
-  
+
 {agent_declarations}
 
   int m_seq_count = 1;
@@ -47,7 +47,7 @@ endtask: pre_start
 
 task {top_name}_default_seq::post_start();
   uvm_phase phase = get_starting_phase();
-  if (phase != null) 
+  if (phase != null)
     phase.drop_objection(this);
 endtask: post_start
 

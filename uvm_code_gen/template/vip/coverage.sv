@@ -5,10 +5,10 @@ class {vip_name}_coverage extends uvm_subscriber #({vip_name}_tx);
 
   `uvm_component_utils({vip_name}_coverage)
 
-  {vip_name}_config m_config;    
+  {vip_name}_config m_config;
   {vip_name}_tx     m_item;
   bit m_is_covered;
-     
+
   covergroup m_cov;
     option.per_instance = 1;
     // You may insert additional coverpoints here ...
@@ -22,7 +22,7 @@ class {vip_name}_coverage extends uvm_subscriber #({vip_name}_tx);
   extern function void build_phase(uvm_phase phase);
   extern function void report_phase(uvm_phase phase);
 
-endclass : {vip_name}_coverage 
+endclass : {vip_name}_coverage
 
 
 function {vip_name}_coverage::new(string name, uvm_component parent);

@@ -18,7 +18,7 @@ class {vip_name}_monitor extends uvm_monitor;
   extern task run_phase(uvm_phase phase);
   extern task do_mon();
 
-endclass : {vip_name}_monitor 
+endclass : {vip_name}_monitor
 
 
 function {vip_name}_monitor::new(string name, uvm_component parent);

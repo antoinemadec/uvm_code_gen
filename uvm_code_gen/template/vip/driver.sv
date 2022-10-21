@@ -14,7 +14,7 @@ class {vip_name}_driver extends uvm_driver #({vip_name}_tx);
   extern task run_phase(uvm_phase phase);
   extern task do_drive();
 
-endclass : {vip_name}_driver 
+endclass : {vip_name}_driver
 
 
 function {vip_name}_driver::new(string name, uvm_component parent);

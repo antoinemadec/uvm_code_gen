@@ -1,7 +1,7 @@
 `ifndef {upper_vip_name}_IF_SV
 `define {upper_vip_name}_IF_SV
 
-interface {vip_name}_if(); 
+interface {vip_name}_if();
 
   timeunit      1ns;
   timeprecision 1ps;

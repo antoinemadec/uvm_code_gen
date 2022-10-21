@@ -9,7 +9,7 @@ class {top_name}_config extends uvm_object;
 
   extern function new(string name = "");
 
-endclass : {top_name}_config 
+endclass : {top_name}_config
 
 
 function {top_name}_config::new(string name = "");

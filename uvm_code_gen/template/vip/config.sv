@@ -6,14 +6,14 @@ class {vip_name}_config extends uvm_object;
   // do not register config class with the factory
 
   virtual {vip_name}_if vif;
-                  
+
   uvm_active_passive_enum  is_active = UVM_ACTIVE;
-  bit                      coverage_enable;       
-  bit                      checks_enable;         
+  bit                      coverage_enable;
+  bit                      checks_enable;
 
   extern function new(string name = "");
 
-endclass : {vip_name}_config 
+endclass : {vip_name}_config
 
 
 function {vip_name}_config::new(string name = "");

@@ -20,10 +20,11 @@ class UvmTop(object):
     def fill_template(self, template_rel_path: str, **fmt_values):
         trp_list = template_rel_path.split('/')
         output_rel_path = template_rel_path
-        if  trp_list[0] == "top":
+        if trp_list[0] == "top":
             top = self.top_name
             output_rel_path = f"{top}/{'/'.join(trp_list[1:-1])}/{top}_{trp_list[-1]}"
-        fill_template(self.output_dir / output_rel_path, self.template_dir / template_rel_path, **fmt_values)
+        fill_template(self.output_dir / output_rel_path,
+                      self.template_dir / template_rel_path, **fmt_values)
 
     def get_vip_imports(self):
         return "\n".join([f"  import {v.vip_name}_pkg::*;" for v in self.vips])
@@ -102,7 +103,8 @@ class UvmTop(object):
         top = self.top_name
         for v in self.vips:
             vip = v.vip_name
-            sb_analysis_imp_macros.append(f"`uvm_analysis_imp_decl(_from_{vip})")
+            sb_analysis_imp_macros.append(
+                f"`uvm_analysis_imp_decl(_from_{vip})")
             sb_analysis_imp_declaration.append(
                 f"  uvm_analysis_imp_from_{vip} #({vip}_tx, {top}_scoreboard) {vip}_to_scoreboard;")
             sb_analysis_imp_new.append(
@@ -137,7 +139,7 @@ class UvmTop(object):
         core.append(f"  $TOP_DIR/tb/{top}_tb.sv \\")
         core.append(f"  +UVM_TESTNAME={top}_test  $*")
         return "\n".join(core)
-    
+
     def get_interface_and_dut_instantiation(self):
         inst = []
         inst += [f"  {v.vip_name}_if {v.vip_name}_if();" for v in self.vips]
@@ -152,7 +154,8 @@ class UvmTop(object):
                 port = p.signal_name
                 dut_inst.append(f"    .{port} ({vip}_if.{port})")
         dut_inst_str = ",\n".join(dut_inst)
-        inst.append(f"\n  dut dut(\n    .clk (clk),\n    .rst (rst),\n{dut_inst_str}\n  );")
+        inst.append(
+            f"\n  dut dut(\n    .clk (clk),\n    .rst (rst),\n{dut_inst_str}\n  );")
         return "\n".join(inst)
 
     def write_files(self):

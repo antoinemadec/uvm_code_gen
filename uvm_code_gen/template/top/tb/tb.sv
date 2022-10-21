@@ -23,7 +23,7 @@ module {top_name}_tb;
     if ( !{top_name}_env_config.randomize() )
       `uvm_fatal("{top_name}_tb", "Failed to randomize top-level configuration object" )
 
-    {top_name}_env_config.m_fifo_in_config.vif  = th.fifo_in_if; 
+    {top_name}_env_config.m_fifo_in_config.vif  = th.fifo_in_if;
     {top_name}_env_config.m_fifo_out_config.vif = th.fifo_out_if;
 
     uvm_config_db #({top_name}_config)::set(null, "uvm_test_top", "config", {top_name}_env_config);

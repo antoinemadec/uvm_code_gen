@@ -1,7 +1,7 @@
 `ifndef {upper_vip_name}_SEQ_ITEM_SV
 `define {upper_vip_name}_SEQ_ITEM_SV
 
-class {vip_name}_tx extends uvm_sequence_item; 
+class {vip_name}_tx extends uvm_sequence_item;
 
   `uvm_object_utils({vip_name}_tx)
 
@@ -18,7 +18,7 @@ class {vip_name}_tx extends uvm_sequence_item;
   extern function void do_unpack(uvm_packer packer);
   extern function string convert2string();
 
-endclass : {vip_name}_tx 
+endclass : {vip_name}_tx
 
 
 function {vip_name}_tx::new(string name = "");
