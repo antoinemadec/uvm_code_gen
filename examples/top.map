@@ -1,0 +1,4 @@
+fifo_in fifo_in0
+fifo_in fifo_in1
+fifo_out fifo_out0
+fifo_out fifo_out1

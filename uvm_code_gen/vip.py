@@ -21,7 +21,7 @@ class UvmVip(object):
     """parse template and create UVM Vip"""
 
     def __init__(self,
-                 description_file: str,
+                 description_file: str = "",
                  output_dir: str = "./output",
                  template_dir: str = ""):
         # description
@@ -29,7 +29,8 @@ class UvmVip(object):
         self.if_ports: list[InterfacePort] = []
         self.if_clock: InterfacePort | None = None
         self.trans_vars: list[TransactionVariable] = []
-        self.parse_description_file(description_file)
+        if description_file:
+            self.parse_description_file(description_file)
         # output
         self.vip_dir = Path(output_dir) / self.vip_name
         self.template_dir = get_template_dir(template_dir)
