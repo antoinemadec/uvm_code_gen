@@ -1,28 +1,28 @@
-`ifndef {upper_vip_name}_DRIVER_SV
-`define {upper_vip_name}_DRIVER_SV
+`ifndef {upper_vip}_DRIVER_SV
+`define {upper_vip}_DRIVER_SV
 
-class {vip_name}_driver extends uvm_driver #({vip_name}_tx);
+class {vip}_driver extends uvm_driver #({vip}_tx);
 
-  `uvm_component_utils({vip_name}_driver)
+  `uvm_component_utils({vip}_driver)
 
-  virtual {vip_name}_if vif;
+  virtual {vip}_if vif;
 
-  {vip_name}_config m_config;
+  {vip}_config m_config;
 
   extern function new(string name, uvm_component parent);
 
   extern task run_phase(uvm_phase phase);
   extern task do_drive();
 
-endclass : {vip_name}_driver
+endclass : {vip}_driver
 
 
-function {vip_name}_driver::new(string name, uvm_component parent);
+function {vip}_driver::new(string name, uvm_component parent);
   super.new(name, parent);
 endfunction : new
 
 
-task {vip_name}_driver::run_phase(uvm_phase phase);
+task {vip}_driver::run_phase(uvm_phase phase);
   `uvm_info(get_type_name(), "run_phase", UVM_HIGH)
 
   forever
@@ -35,9 +35,9 @@ task {vip_name}_driver::run_phase(uvm_phase phase);
 endtask : run_phase
 
 
-task {vip_name}_driver::do_drive();
+task {vip}_driver::do_drive();
   `uvm_fatal(get_type_name(), "TODO: fill do_drive()");
 endtask : do_drive
 
 
-`endif // {upper_vip_name}_DRIVER_SV
+`endif // {upper_vip}_DRIVER_SV

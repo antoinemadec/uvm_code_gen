@@ -1,17 +1,17 @@
-package {vip_name}_pkg;
+package {vip}_pkg;
 
   `include "uvm_macros.svh"
 
   import uvm_pkg::*;
 
 
-  `include "{vip_name}_tx.sv"
-  `include "{vip_name}_config.sv"
-  `include "{vip_name}_driver.sv"
-  `include "{vip_name}_monitor.sv"
-  `include "{vip_name}_sequencer.sv"
-  `include "{vip_name}_coverage.sv"
-  `include "{vip_name}_agent.sv"
-  `include "{vip_name}_seq_lib.sv"
+  `include "{vip}_tx.sv"
+  `include "{vip}_config.sv"
+  `include "{vip}_driver.sv"
+  `include "{vip}_monitor.sv"
+  `include "{vip}_sequencer.sv"
+  `include "{vip}_coverage.sv"
+  `include "{vip}_agent.sv"
+  `include "{vip}_seq_lib.sv"
 
-endpackage : {vip_name}_pkg
+endpackage : {vip}_pkg

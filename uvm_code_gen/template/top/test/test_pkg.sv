@@ -1,17 +1,17 @@
-`ifndef {upper_top_name}_TEST_PKG_SV
-`define {upper_top_name}_TEST_PKG_SV
+`ifndef {upper_top}_TEST_PKG_SV
+`define {upper_top}_TEST_PKG_SV
 
-package {top_name}_test_pkg;
+package {top}_test_pkg;
 
   `include "uvm_macros.svh"
 
   import uvm_pkg::*;
 
 {vip_imports}
-  import {top_name}_pkg::*;
+  import {top}_pkg::*;
 
-  `include "{top_name}_test.sv"
+  `include "{top}_test.sv"
 
-endpackage : {top_name}_test_pkg
+endpackage : {top}_test_pkg
 
-`endif // {upper_top_name}_TEST_PKG_SV
+`endif // {upper_top}_TEST_PKG_SV

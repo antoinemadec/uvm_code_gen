@@ -1,15 +1,18 @@
-`ifndef {upper_vip_name}_IF_SV
-`define {upper_vip_name}_IF_SV
+`ifndef {upper_vip}_IF_SV
+`define {upper_vip}_IF_SV
 
-interface {vip_name}_if();
+interface {vip}_if();
 
   timeunit      1ns;
   timeprecision 1ps;
 
-  import {vip_name}_pkg::*;
+  import {vip}_pkg::*;
 
-{ports_and_clocking_blocks}
+  {clock_definition}
+{ports_definition}
 
-endinterface : {vip_name}_if
+{clocking_blocks}
 
-`endif // {upper_vip_name}_IF_SV
+endinterface : {vip}_if
+
+`endif // {upper_vip}_IF_SV

@@ -1,4 +1,4 @@
-package {top_name}_pkg;
+package {top}_pkg;
 
   `include "uvm_macros.svh"
 
@@ -6,9 +6,9 @@ package {top_name}_pkg;
 
 {vip_imports}
 
-  `include "{top_name}_config.sv"
-  `include "{top_name}_seq_lib.sv"
-  `include "{top_name}_scoreboard.sv"
-  `include "{top_name}_env.sv"
+  `include "{top}_config.sv"
+  `include "{top}_seq_lib.sv"
+  `include "{top}_scoreboard.sv"
+  `include "{top}_env.sv"
 
-endpackage : {top_name}_pkg
+endpackage : {top}_pkg

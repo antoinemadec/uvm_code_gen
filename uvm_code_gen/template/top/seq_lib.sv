@@ -1,11 +1,11 @@
-`ifndef {upper_top_name}_SEQ_LIB_SV
-`define {upper_top_name}_SEQ_LIB_SV
+`ifndef {upper_top}_SEQ_LIB_SV
+`define {upper_top}_SEQ_LIB_SV
 
-class {top_name}_default_seq extends uvm_sequence #(uvm_sequence_item);
+class {top}_default_seq extends uvm_sequence #(uvm_sequence_item);
 
-  `uvm_object_utils({top_name}_default_seq)
+  `uvm_object_utils({top}_default_seq)
 
-  {top_name}_config m_config;
+  {top}_config m_config;
 
 {agent_declarations}
 
@@ -16,15 +16,15 @@ class {top_name}_default_seq extends uvm_sequence #(uvm_sequence_item);
   extern task pre_start();
   extern task post_start();
 
-endclass : {top_name}_default_seq
+endclass : {top}_default_seq
 
 
-function {top_name}_default_seq::new(string name = "");
+function {top}_default_seq::new(string name = "");
   super.new(name);
 endfunction : new
 
 
-task {top_name}_default_seq::body();
+task {top}_default_seq::body();
   `uvm_info(get_type_name(), "Default sequence starting", UVM_HIGH)
 
   repeat (m_seq_count)
@@ -38,18 +38,18 @@ task {top_name}_default_seq::body();
 endtask : body
 
 
-task {top_name}_default_seq::pre_start();
+task {top}_default_seq::pre_start();
   uvm_phase phase = get_starting_phase();
   if (phase != null)
     phase.raise_objection(this);
 endtask: pre_start
 
 
-task {top_name}_default_seq::post_start();
+task {top}_default_seq::post_start();
   uvm_phase phase = get_starting_phase();
   if (phase != null)
     phase.drop_objection(this);
 endtask: post_start
 
 
-`endif // {upper_top_name}_SEQ_LIB_SV
+`endif // {upper_top}_SEQ_LIB_SV

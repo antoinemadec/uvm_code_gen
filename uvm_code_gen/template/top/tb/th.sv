@@ -1,4 +1,4 @@
-module {top_name}_th;
+module {top}_th;
 
   timeunit      1ns;
   timeprecision 1ps;
@@ -15,6 +15,14 @@ module {top_name}_th;
     #75 rst = 1;
   end
 
-{interface_and_dut_instantiation}
+{interface_instantiation}
+
+{interface_clock_assign}
+
+  dut dut(
+    .clk (clk),
+    .rst (rst),
+{dut_instantiation}
+  );
 
 endmodule

@@ -3,17 +3,50 @@ from pathlib import Path
 import re
 
 
-class Colors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+class Template:
+    def __init__(self, template_path: Path):
+        self.template_path = template_path
+        if not self.template_path.exists():
+            print_error(f"{self.template_path} does not exist")
+            exit(1)
+        self.template_stat = os.lstat(self.template_path)
 
+    def format(self, **fmt_values) -> str:
+        with self.template_path.open('r') as f:
+            template = f.read()
+        return template.format(**fmt_values)
+
+    def write(self, output_path: Path, **fmt_values):
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with output_path.open('w') as f:
+            f.write(self.format(**fmt_values))
+        template_stat = os.lstat(self.template_path)
+        os.chmod(output_path, template_stat.st_mode)
+
+class StrLists:
+    def __init__(self):
+        self. sl = {}
+
+    def append(self, fmt_values: dict[str, str]):
+        for name in fmt_values:
+            self.sl.setdefault(name, [])
+            string = fmt_values[name][:-1]  # remove last "\n"
+            self.sl[name].append(string)
+
+    def to_dict(self):
+        d = {}
+        for name in self.sl:
+            d[name] = "\n".join(self.sl[name])
+            # remove last empty lines
+            while True:
+                sl = d[name].splitlines()
+                d[name] = "\n".join(sl)
+                if not sl or sl[-1] != '':
+                    break
+            # remove last comma
+            if d[name][-1] == ',':
+                d[name] = d[name][:-1]
+        return d
 
 def get_template_dir(template_dir=""):
     path = os.path.abspath(__file__)
@@ -23,17 +56,15 @@ def get_template_dir(template_dir=""):
     return Path(template_dir)
 
 
-def fill_template(output_path: Path, template_path: Path, **fmt_values):
-    if not template_path.exists():
-        print_error(f"{template_path} does not exist")
-        exit(1)
-    template_stat = os.lstat(template_path)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    with template_path.open('r') as f:
-        template = f.read()
-    with output_path.open('w') as f:
-        f.write(template.format(**fmt_values))
-    os.chmod(output_path, template_stat.st_mode)
+def format_template_dir(template_dir_path: Path, **fmt_values) -> dict[str, str]:
+    d = {}
+    for template_path in template_dir_path.glob('*'):
+        if template_path.is_dir():
+            continue
+        name = template_path.name.split('.')[0]
+        string = Template(template_path).format(**fmt_values)
+        d[name] = string  # remove last "\n"
+    return d
 
 
 class SvCode(object):
@@ -83,3 +114,15 @@ def print_error(s: str):
 
 def print_file_error(error_msg: str, file: str, line: int, line_str=""):
     print_error(f"{error_msg}. File \"{file}\", line {line}\n{line_str}")
+
+
+class Colors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'

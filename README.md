@@ -44,9 +44,10 @@ Generated files are in `./output`.
     - `top/top_seq_lib.sv`
 
 ## TODO
+  - add test scripts
   - support master + slave VIP
   - pass coverage in top_config's new()
-  - always use sv templates instead of strings
+  - change seq name to something less generic ?
   - change convert2string() formatting ?
   - code formatting ?
   - when to prefix members by m_ ?

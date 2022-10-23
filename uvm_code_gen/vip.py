@@ -77,98 +77,57 @@ class UvmVip(object):
             print_error(f"no vip_name found in {description_file}")
             exit(1)
 
-    def fill_template(self, template_name: str, **fmt_values):
-        template_path = self.template_dir / f"vip/{template_name}.sv"
-        output_path = self.vip_dir / f"{self.vip_name}_{template_name}.sv"
-        fill_template(output_path, template_path, **fmt_values)
+    def get_loop_values(self):
+        str_lists = StrLists()
+        loop_dir = self.template_dir / "vip/.loop"
+        port_loop_dir = loop_dir / "port"
+        var_loop_dir = loop_dir / "var"
+        var_if_array_loop_dir = var_loop_dir / "if_array"
+        var_if_not_array_loop_dir = var_loop_dir / "if_not_array"
+        clock_loop_dir = loop_dir / "clock"
 
-    def get_coverpoints(self) -> str:
-        coverpoints = []
-        for var in self.trans_vars:
-            var_name = var.signal_name
-            coverpoints.append(
-                f"    cp_{var_name}: coverpoint m_item.{var_name};")
-        return "\n".join(coverpoints)
-
-    def get_ports_and_clocking_blocks(self) -> str:
         # ports
-        ports = self.if_ports
-        if self.if_clock:
-            ports = [self.if_clock] + ports
-        pcb = [f"  {p.definition}" for p in ports]
-        # clocking blocks
-        if self.if_clock:
-            clock = self.if_clock.signal_name
-            for cb in ("drv", "mon"):
-                pcb.append(
-                    f"\n  clocking cb_{cb} @(posedge {clock});\n" +
-                    "\n".join([f"    input {p.signal_name};" for p in self.if_ports]) +
-                    f"\n  endclocking : cb_{cb}")
-        return "\n".join(pcb)
+        fmt_values = {}
+        for p in self.if_ports:
+            fmt_values["port"] = p.signal_name
+            fmt_values["port_definition"] = p.definition
+            str_lists.append(format_template_dir(port_loop_dir, **fmt_values))
 
-    def get_tx_fmt_values(self) -> dict[str, str]:
-        trans_vars = []
-        tx_do_copy = []
-        tx_do_compare = []
-        tx_do_record = []
-        tx_do_pack = []
-        tx_do_unpack = []
-        tx_convert2string = []
-        tx_convert2string_fmt_values = []
+        # trans_vars
+        fmt_values = {}
         for var in self.trans_vars:
-            name = var.signal_name
-            definition = var.definition
+            fmt_values["var"] = var.signal_name
+            fmt_values["var_definition"] = var.definition
+            str_lists.append(format_template_dir(var_loop_dir, **fmt_values))
             is_array = var.is_unpacked_array
-            trans_vars.append(f"  {definition}")
-            tx_do_copy.append(f"  {name} = rhs_.{name};")
             if is_array:
-                foreach_str = f"  foreach ({name}[i])\n"
-                tx_do_compare.append(foreach_str +
-                                     f"    result &= comparer.compare_field(\"{name}\", {name}[i], rhs_.{name}[i], $bits({name}[i]));")
-                tx_do_record.append(foreach_str +
-                                    f"    `uvm_record_field({{\"{name}_\",$sformatf(\"%0d\",i)}}, {name}[i])")
-                pack_str = f"  `uvm_pack_sarray({name})"
-                tx_convert2string.append(f"\"{name} = %p\\n\"")
-                tx_convert2string_fmt_values.append(f"{name}")
+                str_lists.append(format_template_dir(
+                    var_if_array_loop_dir, **fmt_values))
             else:
-                tx_do_compare.append(
-                    f"  result &= comparer.compare_field(\"{name}\", {name}, rhs_.{name}, $bits({name}));")
-                tx_do_record.append(f"  `uvm_record_field(\"{name}\", {name})")
-                pack_str = f"  `uvm_pack_int({name})"
-                tx_convert2string.append(f"\"{name} = 'h%0h  'd%0d\\n\"")
-                tx_convert2string_fmt_values.append(f"{name}")
-                tx_convert2string_fmt_values.append(f"{name}")
-            tx_do_pack.append(pack_str)
-            tx_do_unpack.append(pack_str.replace("uvm_pack_", "uvm_unpack_"))
-        final_convert2string_str = f"  $sformat(s, {{\"%s\\n\",\n    " + \
-            ",\n    ".join(tx_convert2string) + \
-            f"}},\n    get_full_name(), {', '.join(tx_convert2string_fmt_values)});"
-        d = {
-            "trans_vars": "\n".join(trans_vars),
-            "tx_do_copy": "\n".join(tx_do_copy),
-            "tx_do_compare": "\n".join(tx_do_compare),
-            "tx_do_record": "\n".join(tx_do_record),
-            "tx_do_pack": "\n".join(tx_do_pack),
-            "tx_do_unpack": "\n".join(tx_do_unpack),
-            "tx_convert2string": final_convert2string_str
-        }
-        return d
+                str_lists.append(format_template_dir(
+                    var_if_not_array_loop_dir, **fmt_values))
+
+        # clock
+        fmt_values = str_lists.to_dict()  # get port values
+        fmt_values["clock"] = self.if_clock.signal_name if self.if_clock else ""
+        fmt_values["clock_definition"] = self.if_clock.definition if self.if_clock else ""
+        clock_loop = format_template_dir(clock_loop_dir, **fmt_values)
+        if not self.if_clock:
+            for name in clock_loop:
+                clock_loop[name] = ""
+        str_lists.append(clock_loop)
+
+        return str_lists.to_dict()
 
     def write_files(self):
         fmt_values = {
-            "vip_name": self.vip_name,
-            "upper_vip_name": self.vip_name.upper(),
-            "coverpoints": self.get_coverpoints(),
-            "ports_and_clocking_blocks": self.get_ports_and_clocking_blocks(),
+            "vip": self.vip_name,
+            "upper_vip": self.vip_name.upper(),
+            "clock_definition": self.if_clock.definition if self.if_clock else "",
+            **self.get_loop_values()
         }
-        fmt_values = {**fmt_values, **self.get_tx_fmt_values()}
-        self.fill_template("agent", **fmt_values)
-        self.fill_template("config", **fmt_values)
-        self.fill_template("coverage", **fmt_values)
-        self.fill_template("driver", **fmt_values)
-        self.fill_template("if", **fmt_values)
-        self.fill_template("monitor", **fmt_values)
-        self.fill_template("pkg", **fmt_values)
-        self.fill_template("seq_lib", **fmt_values)
-        self.fill_template("sequencer", **fmt_values)
-        self.fill_template("tx", **fmt_values)
+        for template_path in (self.template_dir / "vip").glob('*'):
+            if not template_path.is_dir():
+                output_path = self.vip_dir / \
+                    f"{self.vip_name}_{template_path.name}"
+                Template(template_path).write(output_path, **fmt_values)

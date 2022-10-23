@@ -5,7 +5,7 @@ set -e
 OUTPUT_DIR="./output"
 BIN_DIR="$(realpath .)"
 VIP_DIR="$(realpath ../vip)"
-TOP_DIR="$(realpath ../{top_name})"
+TOP_DIR="$(realpath ../{top})"
 
 
 #--------------------------------------------------------------
@@ -29,4 +29,13 @@ cd output
 xrun -q \
   -access +rw -vtimescale 1ns/1ps \
   -uvmhome $(ncroot)/tools/methodology/UVM/CDNS-1.2 \
-{xrun_core}
+{xrun_vip_incdir}
+  +incdir+$TOP_DIR \
+  +incdir+$TOP_DIR/test \
+  -F $BIN_DIR/dut_files.f \
+{xrun_pkg_if}
+  $TOP_DIR/{top}_pkg.sv \
+  $TOP_DIR/test/{top}_test_pkg.sv \
+  $TOP_DIR/tb/{top}_th.sv \
+  $TOP_DIR/tb/{top}_tb.sv \
+  +UVM_TESTNAME={top}_test  $*
