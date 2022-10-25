@@ -21,10 +21,10 @@ Once generated, we only have to write a couple of lines to finish it.
 ### Basic
 ```sh
 # top-level environment default name is "top"
-./main.py examples/fifo_in.conf examples/fifo_out.conf
+./main.py examples/fifo/fifo_in.conf examples/fifo/fifo_out.conf
 
 # top-level environment name is "fifo"
-./main.py examples/fifo_in.conf examples/fifo_out.conf -t fifo
+./main.py examples/fifo/fifo_in.conf examples/fifo/fifo_out.conf -t fifo
 ```
 
 Generated files are in `./output`.
@@ -44,7 +44,9 @@ Generated files are in `./output`.
     - `top/top_seq_lib.sv`
 
 ## TODO
-  - add test scripts
+  - top_map: support empty lines and comments
+  - test scripts: compare to ref
+  - README: add "advanced" examples
   - support master + slave VIP
   - pass coverage in top_config's new()
   - change seq name to something less generic ?

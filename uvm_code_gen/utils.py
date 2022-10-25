@@ -44,7 +44,7 @@ class StrLists:
                 if not sl or sl[-1] != '':
                     break
             # remove last comma
-            if d[name][-1] == ',':
+            if d[name] and d[name][-1] == ',':
                 d[name] = d[name][:-1]
         return d
 
