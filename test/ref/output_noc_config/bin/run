@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -e
+
+OUTPUT_DIR="./output"
+BIN_DIR="$(realpath .)"
+VIP_DIR="$(realpath ../vip)"
+TOP_DIR="$(realpath ../top)"
+
+
+#--------------------------------------------------------------
+# functions
+#--------------------------------------------------------------
+error() {
+  >&2 echo "ERROR: $@"
+  exit 1
+}
+
+
+#--------------------------------------------------------------
+# execution
+#--------------------------------------------------------------
+[ -d "$VIP_DIR" ] || error "$VIP_DIR does not exist"
+[ -d "$TOP_DIR" ] || error "$TOP_DIR does not exist"
+
+mkdir -p output
+cd output
+
+xrun -q \
+  -access +rw -vtimescale 1ns/1ps \
+  -uvmhome $(ncroot)/tools/methodology/UVM/CDNS-1.2 \
+  +incdir+$VIP_DIR/ahb \
+  +incdir+$TOP_DIR \
+  +incdir+$TOP_DIR/test \
+  -F $BIN_DIR/dut_files.f \
+  $VIP_DIR/ahb/ahb_pkg.sv \
+  $VIP_DIR/ahb/ahb_if.sv \
+  $TOP_DIR/top_pkg.sv \
+  $TOP_DIR/test/top_test_pkg.sv \
+  $TOP_DIR/tb/top_th.sv \
+  $TOP_DIR/tb/top_tb.sv \
+  +UVM_TESTNAME=top_test  $*

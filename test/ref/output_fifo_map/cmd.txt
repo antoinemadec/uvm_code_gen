@@ -1,0 +1,1 @@
+./main.py --top_map examples/fifo/top.map

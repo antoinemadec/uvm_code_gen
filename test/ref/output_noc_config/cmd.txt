@@ -1,0 +1,1 @@
+./main.py examples/noc/ahb.conf

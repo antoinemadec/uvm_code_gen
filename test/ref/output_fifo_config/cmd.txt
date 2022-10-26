@@ -1,0 +1,1 @@
+./main.py examples/fifo/fifo_in.conf examples/fifo/fifo_out.conf
