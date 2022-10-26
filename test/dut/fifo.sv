@@ -35,3 +35,44 @@ module fifo (
   end
 
 endmodule
+
+
+module dual_fifo (
+  input clk,
+  // data_in
+  input [31:0] data_in0,
+  input        data_in_vld0,
+  output       data_in_rdy0,
+  input [31:0] data_in1,
+  input        data_in_vld1,
+  output       data_in_rdy1,
+  // data_out
+  output logic [15:0] data_out0,
+  output        data_out_vld0,
+  input         data_out_rdy0,
+  output logic [15:0] data_out1,
+  output        data_out_vld1,
+  input         data_out_rdy1
+);
+
+  fifo fifo0 (
+    .clk          (clk         ),
+    .data_in      (data_in0     ),
+    .data_in_vld  (data_in_vld0 ),
+    .data_in_rdy  (data_in_rdy0 ),
+    .data_out     (data_out0    ),
+    .data_out_vld (data_out_vld0),
+    .data_out_rdy (data_out_rdy0)
+  );
+
+  fifo fifo1 (
+    .clk          (clk         ),
+    .data_in      (data_in1     ),
+    .data_in_vld  (data_in_vld1 ),
+    .data_in_rdy  (data_in_rdy1 ),
+    .data_out     (data_out1    ),
+    .data_out_vld (data_out_vld1),
+    .data_out_rdy (data_out_rdy1)
+  );
+
+endmodule
