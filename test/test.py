@@ -33,8 +33,11 @@ def print_diff_files(dcmp) -> bool:
             ok = False
             print(string % (file, left, right))
             if name == "diff_files":
-                print(bash(f"diff {GIT_TOP}/{left}/{file} {GIT_TOP}/{right}/{file}",
+                print(bash(f"diff {GIT_TOP}/{left}/{file} {GIT_TOP}/{right}/{file} --color=always",
                            error_ok=True))
+    for sub_dcmp in dcmp.subdirs.values():
+        if not print_diff_files(sub_dcmp):
+            ok = False
     return ok
 
 
@@ -78,7 +81,8 @@ def gen_output(example_name: str) -> bool:
             ref_dir = GIT_TOP / f"test/ref/{output_name}"
             output_dir = GIT_TOP / f"{output_name}"
             dcmp = filecmp.dircmp(ref_dir, output_dir)
-            ok = ok and print_diff_files(dcmp)
+            if not print_diff_files(dcmp):
+                ok = False
     return ok
 
 
