@@ -97,4 +97,3 @@ for example in "fifo", "noc":
 
 if shutil.which("xrun"):
     run_fifo("output_fifo_config")
-    run_fifo("output_fifo_config_and_map")
