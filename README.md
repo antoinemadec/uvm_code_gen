@@ -43,10 +43,26 @@ Generated files are in `./output`.
     - `write_from_*()` in `top/top_scoreboard.sv`
     - `top/top_seq_lib.sv`
 
+### Advanced
+#### --top_map
+By default:
+  - each VIP is instiated once
+  - instance name is the name of the VIP
+
+This can be changed using the `--top_map` option.
+```sh
+# multiple instances of the VIPs
+./main.py examples/noc/*.conf --top_map examples/noc/top.map
+
+# you can also refer to VIPs that are not defined by a config file:
+#  - the top-level env/scoreboard/etc will be correctly generated
+#  - the VIP directory won't be generated
+./main.py --top_map examples/noc/top.map
+```
+
 ## TODO
-  - README: add "advanced" examples
-  - support master + slave VIP
   - pass coverage in top_config's new()
+  - support master + slave VIP
   - change seq name to something less generic ?
   - change convert2string() formatting ?
   - code formatting ?
