@@ -32,6 +32,8 @@ else:
     with open(args.top_map, 'r') as f:
         for line in f:
             lsplit = line.split()
+            if not lsplit or lsplit[0] == "#":
+                continue
             if len(lsplit) != 2:
                 print_error(f"{args.top_map} format is incorrect")
                 exit(1)

@@ -44,8 +44,6 @@ Generated files are in `./output`.
     - `top/top_seq_lib.sv`
 
 ## TODO
-  - top_map: support empty lines and comments
-  - test scripts: compare to ref
   - README: add "advanced" examples
   - support master + slave VIP
   - pass coverage in top_config's new()
