@@ -7,12 +7,12 @@ class {top}_config extends uvm_object;
 
 {config_declarations}
 
-  extern function new(string name = "");
+  extern function new(string name = "", bit coverage_enable = 0);
 
 endclass : {top}_config
 
 
-function {top}_config::new(string name = "");
+function {top}_config::new(string name = "", bit coverage_enable = 0);
   super.new(name);
 
 {config_new_core}

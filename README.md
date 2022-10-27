@@ -61,7 +61,6 @@ This can be changed using the `--top_map` option.
 ```
 
 ## TODO
-  - pass coverage in top_config's new()
   - support master + slave VIP
   - change seq name to something less generic ?
   - change convert2string() formatting ?

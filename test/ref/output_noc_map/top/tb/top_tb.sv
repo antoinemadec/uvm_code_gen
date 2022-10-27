@@ -10,16 +10,17 @@ module top_tb;
   import top_test_pkg::*;
   import top_pkg::top_config;
 
-  // Configuration object for top-level environment
   top_config top_env_config;
 
-  // Test harness
+  // test harness
   top_th th();
 
   initial
   begin
-    // Create and populate top-level configuration object
-    top_env_config = new("top_env_config");
+    bit coverage_enable;
+    coverage_enable = $test$plusargs("coverage_enable") ? 1:0;
+
+    top_env_config = new("top_env_config", coverage_enable);
     if ( !top_env_config.randomize() )
       `uvm_fatal("top_tb", "Failed to randomize top-level configuration object" )
 

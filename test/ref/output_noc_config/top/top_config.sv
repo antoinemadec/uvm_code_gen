@@ -7,18 +7,18 @@ class top_config extends uvm_object;
 
   rand ahb_config m_ahb_config;
 
-  extern function new(string name = "");
+  extern function new(string name = "", bit coverage_enable = 0);
 
 endclass : top_config
 
 
-function top_config::new(string name = "");
+function top_config::new(string name = "", bit coverage_enable = 0);
   super.new(name);
 
   m_ahb_config = new("m_ahb_config");
   m_ahb_config.is_active = UVM_ACTIVE;
   m_ahb_config.checks_enable = 1;
-  m_ahb_config.coverage_enable = 1;
+  m_ahb_config.coverage_enable = coverage_enable;
 endfunction : new
 
 

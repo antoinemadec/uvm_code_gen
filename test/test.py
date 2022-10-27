@@ -33,7 +33,7 @@ def print_diff_files(dcmp) -> bool:
             ok = False
             print(string % (file, left, right))
             if name == "diff_files":
-                print(bash(f"diff {GIT_TOP}/{left}/{file} {GIT_TOP}/{right}/{file} --color=always",
+                print(bash(f"diff {GIT_TOP}/{left}/{file} {GIT_TOP}/{right}/{file}",
                            error_ok=True))
     for sub_dcmp in dcmp.subdirs.values():
         if not print_diff_files(sub_dcmp):
