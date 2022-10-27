@@ -1,14 +1,14 @@
-# uvm_code_gen
+# ⚡️ uvm_code_gen
 Simple template-based UVM code generator.
 
-## Rationale
-The [UVM](https://en.wikipedia.org/wiki/Universal_Verification_Methodology) verification methodology is great for reuse and standardization of RTL verification.  
-It is however very verbose.
+## 💡 Rationale
+[UVM](https://en.wikipedia.org/wiki/Universal_Verification_Methodology) is great for reuse and standardization of RTL verification.  
+However, it is very verbose.
 
-The goal of **uvm_code_gen** is to generate a full UVM testbench skeleton based on simple configuration files.  
+**uvm_code_gen** generates a full UVM testbench skeleton based on simple configuration files.  
 Once generated, we only have to write a couple of lines to finish it.
 
-## Features
+## ✨ Features
 **uvm_code_gen** generates the following code:
   - VIPs (agent, interface, sequence, coverage)
   - top-level environment
@@ -17,22 +17,18 @@ Once generated, we only have to write a couple of lines to finish it.
     - virtual sequence
   - run script
 
-## Usage
+## 🚀 Usage
 ### Basic
 ```sh
-# top-level environment default name is "top"
 ./main.py examples/fifo/fifo_in.conf examples/fifo/fifo_out.conf
-
-# top-level environment name is "fifo"
-./main.py examples/fifo/fifo_in.conf examples/fifo/fifo_out.conf -t fifo
 ```
 
 Generated files are in `./output`.
 
 #### run simulation
-  - create `bin/dut_files.f`
-  - edit dut instantiation in `top/tb/top_th.sv`
-  - `cd bin` and `./run`
+  1. create `bin/dut_files.f`
+  1. edit dut instantiation in `top/tb/top_th.sv`
+  1. `cd bin` and `./run`
 
 #### edit to your liking
   - VIP
@@ -44,7 +40,16 @@ Generated files are in `./output`.
     - `top/top_seq_lib.sv`
 
 ### Advanced
-#### --top_map
+#### top_env_name
+```sh
+# top-level environment default name is "top"
+./main.py examples/fifo/fifo_in.conf examples/fifo/fifo_out.conf
+
+# top-level environment name is "fifo"
+./main.py examples/fifo/fifo_in.conf examples/fifo/fifo_out.conf -t fifo
+```
+
+#### top_map
 By default:
   - each VIP is instiated once
   - instance name is the name of the VIP
@@ -60,12 +65,13 @@ This can be changed using the `--top_map` option.
 ./main.py --top_map examples/noc/top.map
 ```
 
-## TODO
+## 🚧 TODO
   - support master + slave VIP
   - change seq name to something less generic ?
   - change convert2string() formatting ?
   - code formatting ?
   - when to prefix members by m_ ?
 
-## Credits
-The UVM code generation and coding guidelines are heavily inspired by [Doulos' easier_uvm](https://www.doulos.com/knowhow/systemverilog/uvm/easier-uvm/). Thanks a lot to all the contributors.
+## 🙏 Credits
+The UVM code generation and coding guidelines are heavily inspired by [Doulos' easier_uvm](https://www.doulos.com/knowhow/systemverilog/uvm/easier-uvm/).  
+Thanks a lot to all the contributors.
