@@ -31,7 +31,10 @@ vip_instances: dict[str, list[str]] = {}
 if not args.top_map:
     # default map
     for v in vips:
-        vip_instances[v.vip_name] = [v.vip_name]
+        if v.has_master_and_slave:
+            vip_instances[v.vip_name] = [f"{v.vip_name}_master", f"{v.vip_name}_slave"]
+        else:
+            vip_instances[v.vip_name] = [v.vip_name]
 else:
     # custom map
     with open(args.top_map, 'r') as f:

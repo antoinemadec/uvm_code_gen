@@ -8,6 +8,7 @@ class ahb_config extends uvm_object;
   virtual ahb_if vif;
 
   uvm_active_passive_enum  is_active = UVM_ACTIVE;
+
   bit                      coverage_enable;
   bit                      checks_enable;
 

@@ -1,25 +1,25 @@
-`ifndef FIFO_OUT_CONFIG_SV
-`define FIFO_OUT_CONFIG_SV
+`ifndef HANDSHAKE_CONFIG_SV
+`define HANDSHAKE_CONFIG_SV
 
-class fifo_out_config extends uvm_object;
+class handshake_config extends uvm_object;
 
   // do not register config class with the factory
 
-  virtual fifo_out_if vif;
+  virtual handshake_if vif;
 
   uvm_active_passive_enum  is_active = UVM_ACTIVE;
-
+  bit                      is_master;
   bit                      coverage_enable;
   bit                      checks_enable;
 
   extern function new(string name = "");
 
-endclass : fifo_out_config
+endclass : handshake_config
 
 
-function fifo_out_config::new(string name = "");
+function handshake_config::new(string name = "");
   super.new(name);
 endfunction : new
 
 
-`endif // FIFO_OUT_CONFIG_SV
+`endif // HANDSHAKE_CONFIG_SV

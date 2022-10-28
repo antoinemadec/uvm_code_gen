@@ -24,6 +24,8 @@ class UvmTop(object):
         vip_loop_dir = self.template_dir / template_rel_dir / ".loop/vip"
         inst_loop_dir = vip_loop_dir / "inst"
         clock_loop_dir = vip_loop_dir / "inst/clock"
+        has_master_and_slave_loop_dir = vip_loop_dir / "inst/if_has_master_and_slave"
+        not_has_master_and_slave_loop_dir = vip_loop_dir / "inst/if_not_has_master_and_slave"
         port_loop_dir = vip_loop_dir / "inst/port"
         fmt_values = {"top": self.top_name}
 
@@ -35,14 +37,23 @@ class UvmTop(object):
                 fmt_values["inst"] = inst
                 str_lists.append(
                     format_template_dir(inst_loop_dir, **fmt_values))
+                # master/slave
+                if v.has_master_and_slave:
+                    fmt_values["is_master"] = "1" if "master" in inst else "0"
+                    str_lists.append(
+                        format_template_dir(has_master_and_slave_loop_dir, **fmt_values))
+                else:
+                    str_lists.append(
+                        format_template_dir(not_has_master_and_slave_loop_dir, **fmt_values))
                 # clock
-                clock = v.if_clock.signal_name if v.if_clock else ""
-                fmt_values["clock"] = clock
-                clock_loop = format_template_dir(clock_loop_dir, **fmt_values)
-                if not v.if_clock:
-                    for name in clock_loop:
-                        clock_loop[name] = ""
-                str_lists.append(clock_loop)
+                if v.if_clock:
+                    fmt_values["clock"] = v.if_clock.signal_name
+                    str_lists.append(
+                        format_template_dir(clock_loop_dir, **fmt_values))
+                else:
+                    str_lists.append(
+                        format_template_dir(clock_loop_dir, force_empty_string=True))
+                # ports
                 if v.if_ports:
                     for p in v.if_ports:
                         fmt_values["port"] = p.signal_name
@@ -50,11 +61,8 @@ class UvmTop(object):
                             format_template_dir(port_loop_dir, **fmt_values))
                 else:
                     # when present in top_map but vip_config is not provided, no ports are defined
-                    fmt_values["port"] = ""
-                    dummy_port_loop = format_template_dir(port_loop_dir, **fmt_values)
-                    for name in dummy_port_loop:
-                        dummy_port_loop[name] = ""
-                    str_lists.append(dummy_port_loop)
+                    str_lists.append(
+                        format_template_dir(port_loop_dir, force_empty_string=True))
 
         return str_lists.to_dict()
 

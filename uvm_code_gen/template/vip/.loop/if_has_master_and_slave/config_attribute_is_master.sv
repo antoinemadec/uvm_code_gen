@@ -1,0 +1,1 @@
+  bit                      is_master;

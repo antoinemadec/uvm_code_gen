@@ -56,14 +56,13 @@ def get_template_dir(template_dir=""):
     return Path(template_dir)
 
 
-def format_template_dir(template_dir_path: Path, **fmt_values) -> dict[str, str]:
+def format_template_dir(template_dir_path: Path, force_empty_string= False, **fmt_values) -> dict[str, str]:
     d = {}
     for template_path in template_dir_path.glob('*'):
         if template_path.is_dir():
             continue
         name = template_path.name.split('.')[0]
-        string = Template(template_path).format(**fmt_values)
-        d[name] = string  # remove last "\n"
+        d[name] = "" if force_empty_string else Template(template_path).format(**fmt_values)
     return d
 
 

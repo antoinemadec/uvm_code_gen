@@ -33,8 +33,8 @@ Generated files are in `./output`.
 #### edit to your liking
   - VIP
     - clocking blocks in `vip/*/*_if.sv`
-    -  `do_drive()` in `vip/*/*_driver.sv`
-    -  `do_mon()` in `vip/*/*_monitor.sv`
+    - `do_drive()` in `vip/*/*_driver.sv`
+    - `do_mon()` in `vip/*/*_monitor.sv`
   - TOP
     - `write_from_*()` in `top/top_scoreboard.sv`
     - `top/top_seq_lib.sv`
@@ -65,8 +65,18 @@ This can be changed using the `--top_map` option.
 ./main.py --top_map examples/noc/top.map
 ```
 
+#### has_master_and_slave
+Adding `has_master_and_slave = 1` in the configuration file will
+  - add `*_master_driver.sv` and `*_slave_driver.sv`
+  - add `is_master` field in the VIP's config class and use it in the `*_agent.sv`
+  - set `is_master` in the `top_config.sv` to 1 if the instance name matches **master**
+  - add a **master** and **slave** instance by default (unless `--top_map` is used)
+
+```sh
+./main.py examples/handshake/handshake.conf
+```
+
 ## 🚧 TODO
-  - support master + slave VIP
   - change seq name to something less generic ?
   - change convert2string() formatting ?
   - code formatting ?

@@ -7,7 +7,7 @@ package {vip}_pkg;
 
   `include "{vip}_tx.sv"
   `include "{vip}_config.sv"
-  `include "{vip}_driver.sv"
+{include_driver}
   `include "{vip}_monitor.sv"
   `include "{vip}_sequencer.sv"
   `include "{vip}_coverage.sv"

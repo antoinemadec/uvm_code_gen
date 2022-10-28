@@ -1,16 +1,16 @@
-`ifndef {upper_vip}_AGENT_SV
-`define {upper_vip}_AGENT_SV
+`ifndef HANDSHAKE_AGENT_SV
+`define HANDSHAKE_AGENT_SV
 
-class {vip}_agent extends uvm_agent;
+class handshake_agent extends uvm_agent;
 
-  `uvm_component_utils({vip}_agent)
+  `uvm_component_utils(handshake_agent)
 
-  uvm_analysis_port #({vip}_tx) analysis_port;
+  uvm_analysis_port #(handshake_tx) analysis_port;
 
-  {vip}_config       m_config;
-  {vip}_sequencer_t  m_sequencer;
-  {vip}_driver       m_driver;
-  {vip}_monitor      m_monitor;
+  handshake_config       m_config;
+  handshake_sequencer_t  m_sequencer;
+  handshake_driver       m_driver;
+  handshake_monitor      m_monitor;
 
   local int m_is_active = -1;
 
@@ -20,34 +20,37 @@ class {vip}_agent extends uvm_agent;
   extern function void connect_phase(uvm_phase phase);
   extern function uvm_active_passive_enum get_is_active();
 
-endclass : {vip}_agent
+endclass : handshake_agent
 
 
-function  {vip}_agent::new(string name, uvm_component parent);
+function  handshake_agent::new(string name, uvm_component parent);
   super.new(name, parent);
   analysis_port = new("analysis_port", this);
 endfunction : new
 
 
-function void {vip}_agent::build_phase(uvm_phase phase);
+function void handshake_agent::build_phase(uvm_phase phase);
 
-  if (!uvm_config_db #({vip}_config)::get(this, "", "config", m_config))
-    `uvm_fatal(get_type_name(), "{vip} config not found")
+  if (!uvm_config_db #(handshake_config)::get(this, "", "config", m_config))
+    `uvm_fatal(get_type_name(), "handshake config not found")
 
-  m_monitor = {vip}_monitor::type_id::create("m_monitor", this);
+  m_monitor = handshake_monitor::type_id::create("m_monitor", this);
 
   if (get_is_active() == UVM_ACTIVE)
   begin
-{driver_create}
-    m_sequencer = {vip}_sequencer_t::type_id::create("m_sequencer", this);
+    if (m_config.is_master)
+      m_driver = handshake_master_driver::type_id::create("m_driver", this);
+    else
+      m_driver = handshake_slave_driver::type_id::create("m_driver", this);
+    m_sequencer = handshake_sequencer_t::type_id::create("m_sequencer", this);
   end
 
 endfunction : build_phase
 
 
-function void {vip}_agent::connect_phase(uvm_phase phase);
+function void handshake_agent::connect_phase(uvm_phase phase);
   if (m_config.vif == null)
-    `uvm_warning(get_type_name(), "{vip} virtual interface is not set!")
+    `uvm_warning(get_type_name(), "handshake virtual interface is not set!")
 
   m_monitor.vif = m_config.vif;
   m_monitor.m_config = m_config;
@@ -63,7 +66,7 @@ function void {vip}_agent::connect_phase(uvm_phase phase);
 endfunction : connect_phase
 
 
-function uvm_active_passive_enum {vip}_agent::get_is_active();
+function uvm_active_passive_enum handshake_agent::get_is_active();
   if (m_is_active == -1)
   begin
     if (uvm_config_db#(uvm_bitstream_t)::get(this, "", "is_active", m_is_active))
@@ -78,4 +81,4 @@ function uvm_active_passive_enum {vip}_agent::get_is_active();
 endfunction : get_is_active
 
 
-`endif // {upper_vip}_AGENT_SV
+`endif // HANDSHAKE_AGENT_SV

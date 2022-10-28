@@ -8,6 +8,7 @@ class fifo_in_config extends uvm_object;
   virtual fifo_in_if vif;
 
   uvm_active_passive_enum  is_active = UVM_ACTIVE;
+
   bit                      coverage_enable;
   bit                      checks_enable;
 

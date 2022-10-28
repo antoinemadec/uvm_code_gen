@@ -41,9 +41,14 @@ def print_diff_files(dcmp) -> bool:
     return ok
 
 
-def run_fifo(output_dir: str | Path):
+def run_simu(output_dir: str | Path):
     global GIT_TOP
-    script = f"{GIT_TOP}/test/bin/run_fifo.sh"
+    if "fifo" in str(output_dir):
+        script = f"{GIT_TOP}/test/bin/run_fifo.sh"
+    elif "handshake" in str(output_dir):
+        script = f"{GIT_TOP}/test/bin/run_handshake.sh"
+    else:
+        raise Exception(f"cannot run {output_dir}")
     print(f"-- run {output_dir}")
     bash(f"{script} {GIT_TOP} {output_dir}")
 
@@ -90,11 +95,14 @@ def gen_output(example_name: str) -> bool:
 # execution
 # --------------------------------------------------------------
 GIT_TOP = Path(bash("git rev-parse --show-toplevel"))
-for example in "fifo", "noc":
-    ok = gen_output(example)
-    if not ok:
-        exit(1)
+
+ok = True
+for example in "fifo", "noc", "handshake":
+    ok = ok and gen_output(example)
+if not ok:
+    exit(1)
 
 if shutil.which("xrun"):
-    run_fifo("output_fifo_config")
-    run_fifo("output_fifo_config_and_map")
+    run_simu("output_fifo_config")
+    run_simu("output_fifo_config_and_map")
+    run_simu("output_handshake_config")
