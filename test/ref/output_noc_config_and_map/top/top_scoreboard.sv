@@ -13,14 +13,14 @@
 class top_scoreboard extends uvm_scoreboard;
   `uvm_component_utils(top_scoreboard)
 
-  uvm_analysis_imp_from_ahb_m0 #(ahb_tx, top_scoreboard) ahb_m0_to_scoreboard;
-  uvm_analysis_imp_from_ahb_m1 #(ahb_tx, top_scoreboard) ahb_m1_to_scoreboard;
-  uvm_analysis_imp_from_ahb_m2 #(ahb_tx, top_scoreboard) ahb_m2_to_scoreboard;
-  uvm_analysis_imp_from_ahb_m3 #(ahb_tx, top_scoreboard) ahb_m3_to_scoreboard;
-  uvm_analysis_imp_from_ahb_s0 #(ahb_tx, top_scoreboard) ahb_s0_to_scoreboard;
-  uvm_analysis_imp_from_ahb_s1 #(ahb_tx, top_scoreboard) ahb_s1_to_scoreboard;
-  uvm_analysis_imp_from_ahb_s2 #(ahb_tx, top_scoreboard) ahb_s2_to_scoreboard;
-  uvm_analysis_imp_from_ahb_s3 #(ahb_tx, top_scoreboard) ahb_s3_to_scoreboard;
+  uvm_analysis_imp_from_ahb_m0 #(ahb_tx, top_scoreboard) ahb_m0_export;
+  uvm_analysis_imp_from_ahb_m1 #(ahb_tx, top_scoreboard) ahb_m1_export;
+  uvm_analysis_imp_from_ahb_m2 #(ahb_tx, top_scoreboard) ahb_m2_export;
+  uvm_analysis_imp_from_ahb_m3 #(ahb_tx, top_scoreboard) ahb_m3_export;
+  uvm_analysis_imp_from_ahb_s0 #(ahb_tx, top_scoreboard) ahb_s0_export;
+  uvm_analysis_imp_from_ahb_s1 #(ahb_tx, top_scoreboard) ahb_s1_export;
+  uvm_analysis_imp_from_ahb_s2 #(ahb_tx, top_scoreboard) ahb_s2_export;
+  uvm_analysis_imp_from_ahb_s3 #(ahb_tx, top_scoreboard) ahb_s3_export;
 
   top_config m_config;
 
@@ -28,14 +28,14 @@ class top_scoreboard extends uvm_scoreboard;
     super.new(name, parent);
     if (!uvm_config_db #(top_config)::get(this, "", "config", m_config))
       `uvm_fatal(get_type_name(), "Unable to get top_config")
-    ahb_m0_to_scoreboard = new("ahb_m0_to_scoreboard", this);
-    ahb_m1_to_scoreboard = new("ahb_m1_to_scoreboard", this);
-    ahb_m2_to_scoreboard = new("ahb_m2_to_scoreboard", this);
-    ahb_m3_to_scoreboard = new("ahb_m3_to_scoreboard", this);
-    ahb_s0_to_scoreboard = new("ahb_s0_to_scoreboard", this);
-    ahb_s1_to_scoreboard = new("ahb_s1_to_scoreboard", this);
-    ahb_s2_to_scoreboard = new("ahb_s2_to_scoreboard", this);
-    ahb_s3_to_scoreboard = new("ahb_s3_to_scoreboard", this);
+    ahb_m0_export = new("ahb_m0_export", this);
+    ahb_m1_export = new("ahb_m1_export", this);
+    ahb_m2_export = new("ahb_m2_export", this);
+    ahb_m3_export = new("ahb_m3_export", this);
+    ahb_s0_export = new("ahb_s0_export", this);
+    ahb_s1_export = new("ahb_s1_export", this);
+    ahb_s2_export = new("ahb_s2_export", this);
+    ahb_s3_export = new("ahb_s3_export", this);
   endfunction : new
 
 

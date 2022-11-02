@@ -1,1 +1,1 @@
-    {inst}_to_scoreboard = new("{inst}_to_scoreboard", this);
+    {inst}_export = new("{inst}_export", this);

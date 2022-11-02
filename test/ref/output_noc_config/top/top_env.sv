@@ -51,7 +51,7 @@ function void top_env::connect_phase(uvm_phase phase);
   `uvm_info(get_type_name(), "In connect_phase", UVM_HIGH)
 
   m_ahb_agent.analysis_port.connect(m_ahb_coverage.analysis_export);
-  m_ahb_agent.analysis_port.connect(m_scoreboard.ahb_to_scoreboard);
+  m_ahb_agent.analysis_port.connect(m_scoreboard.ahb_export);
 endfunction : connect_phase
 
 

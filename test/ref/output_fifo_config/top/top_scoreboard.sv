@@ -7,8 +7,8 @@
 class top_scoreboard extends uvm_scoreboard;
   `uvm_component_utils(top_scoreboard)
 
-  uvm_analysis_imp_from_fifo_in #(fifo_in_tx, top_scoreboard) fifo_in_to_scoreboard;
-  uvm_analysis_imp_from_fifo_out #(fifo_out_tx, top_scoreboard) fifo_out_to_scoreboard;
+  uvm_analysis_imp_from_fifo_in #(fifo_in_tx, top_scoreboard) fifo_in_export;
+  uvm_analysis_imp_from_fifo_out #(fifo_out_tx, top_scoreboard) fifo_out_export;
 
   top_config m_config;
 
@@ -16,8 +16,8 @@ class top_scoreboard extends uvm_scoreboard;
     super.new(name, parent);
     if (!uvm_config_db #(top_config)::get(this, "", "config", m_config))
       `uvm_fatal(get_type_name(), "Unable to get top_config")
-    fifo_in_to_scoreboard = new("fifo_in_to_scoreboard", this);
-    fifo_out_to_scoreboard = new("fifo_out_to_scoreboard", this);
+    fifo_in_export = new("fifo_in_export", this);
+    fifo_out_export = new("fifo_out_export", this);
   endfunction : new
 
 

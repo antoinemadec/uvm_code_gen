@@ -64,10 +64,10 @@ function void top_env::connect_phase(uvm_phase phase);
   `uvm_info(get_type_name(), "In connect_phase", UVM_HIGH)
 
   m_fifo_in_agent.analysis_port.connect(m_fifo_in_coverage.analysis_export);
-  m_fifo_in_agent.analysis_port.connect(m_scoreboard.fifo_in_to_scoreboard);
+  m_fifo_in_agent.analysis_port.connect(m_scoreboard.fifo_in_export);
 
   m_fifo_out_agent.analysis_port.connect(m_fifo_out_coverage.analysis_export);
-  m_fifo_out_agent.analysis_port.connect(m_scoreboard.fifo_out_to_scoreboard);
+  m_fifo_out_agent.analysis_port.connect(m_scoreboard.fifo_out_export);
 endfunction : connect_phase
 
 

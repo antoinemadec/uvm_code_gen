@@ -64,10 +64,10 @@ function void top_env::connect_phase(uvm_phase phase);
   `uvm_info(get_type_name(), "In connect_phase", UVM_HIGH)
 
   m_handshake_master_agent.analysis_port.connect(m_handshake_master_coverage.analysis_export);
-  m_handshake_master_agent.analysis_port.connect(m_scoreboard.handshake_master_to_scoreboard);
+  m_handshake_master_agent.analysis_port.connect(m_scoreboard.handshake_master_export);
 
   m_handshake_slave_agent.analysis_port.connect(m_handshake_slave_coverage.analysis_export);
-  m_handshake_slave_agent.analysis_port.connect(m_scoreboard.handshake_slave_to_scoreboard);
+  m_handshake_slave_agent.analysis_port.connect(m_scoreboard.handshake_slave_export);
 endfunction : connect_phase
 
 

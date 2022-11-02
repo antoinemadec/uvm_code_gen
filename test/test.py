@@ -98,7 +98,7 @@ GIT_TOP = Path(bash("git rev-parse --show-toplevel"))
 
 ok = True
 for example in "fifo", "noc", "handshake":
-    ok = ok and gen_output(example)
+    ok = gen_output(example) and ok
 if not ok:
     exit(1)
 

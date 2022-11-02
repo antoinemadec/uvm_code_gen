@@ -6,7 +6,7 @@
 class top_scoreboard extends uvm_scoreboard;
   `uvm_component_utils(top_scoreboard)
 
-  uvm_analysis_imp_from_ahb #(ahb_tx, top_scoreboard) ahb_to_scoreboard;
+  uvm_analysis_imp_from_ahb #(ahb_tx, top_scoreboard) ahb_export;
 
   top_config m_config;
 
@@ -14,7 +14,7 @@ class top_scoreboard extends uvm_scoreboard;
     super.new(name, parent);
     if (!uvm_config_db #(top_config)::get(this, "", "config", m_config))
       `uvm_fatal(get_type_name(), "Unable to get top_config")
-    ahb_to_scoreboard = new("ahb_to_scoreboard", this);
+    ahb_export = new("ahb_export", this);
   endfunction : new
 
 

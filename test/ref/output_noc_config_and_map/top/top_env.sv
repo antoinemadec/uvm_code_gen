@@ -142,28 +142,28 @@ function void top_env::connect_phase(uvm_phase phase);
   `uvm_info(get_type_name(), "In connect_phase", UVM_HIGH)
 
   m_ahb_m0_agent.analysis_port.connect(m_ahb_m0_coverage.analysis_export);
-  m_ahb_m0_agent.analysis_port.connect(m_scoreboard.ahb_m0_to_scoreboard);
+  m_ahb_m0_agent.analysis_port.connect(m_scoreboard.ahb_m0_export);
 
   m_ahb_m1_agent.analysis_port.connect(m_ahb_m1_coverage.analysis_export);
-  m_ahb_m1_agent.analysis_port.connect(m_scoreboard.ahb_m1_to_scoreboard);
+  m_ahb_m1_agent.analysis_port.connect(m_scoreboard.ahb_m1_export);
 
   m_ahb_m2_agent.analysis_port.connect(m_ahb_m2_coverage.analysis_export);
-  m_ahb_m2_agent.analysis_port.connect(m_scoreboard.ahb_m2_to_scoreboard);
+  m_ahb_m2_agent.analysis_port.connect(m_scoreboard.ahb_m2_export);
 
   m_ahb_m3_agent.analysis_port.connect(m_ahb_m3_coverage.analysis_export);
-  m_ahb_m3_agent.analysis_port.connect(m_scoreboard.ahb_m3_to_scoreboard);
+  m_ahb_m3_agent.analysis_port.connect(m_scoreboard.ahb_m3_export);
 
   m_ahb_s0_agent.analysis_port.connect(m_ahb_s0_coverage.analysis_export);
-  m_ahb_s0_agent.analysis_port.connect(m_scoreboard.ahb_s0_to_scoreboard);
+  m_ahb_s0_agent.analysis_port.connect(m_scoreboard.ahb_s0_export);
 
   m_ahb_s1_agent.analysis_port.connect(m_ahb_s1_coverage.analysis_export);
-  m_ahb_s1_agent.analysis_port.connect(m_scoreboard.ahb_s1_to_scoreboard);
+  m_ahb_s1_agent.analysis_port.connect(m_scoreboard.ahb_s1_export);
 
   m_ahb_s2_agent.analysis_port.connect(m_ahb_s2_coverage.analysis_export);
-  m_ahb_s2_agent.analysis_port.connect(m_scoreboard.ahb_s2_to_scoreboard);
+  m_ahb_s2_agent.analysis_port.connect(m_scoreboard.ahb_s2_export);
 
   m_ahb_s3_agent.analysis_port.connect(m_ahb_s3_coverage.analysis_export);
-  m_ahb_s3_agent.analysis_port.connect(m_scoreboard.ahb_s3_to_scoreboard);
+  m_ahb_s3_agent.analysis_port.connect(m_scoreboard.ahb_s3_export);
 endfunction : connect_phase
 
 

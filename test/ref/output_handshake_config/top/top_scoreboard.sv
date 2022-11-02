@@ -7,8 +7,8 @@
 class top_scoreboard extends uvm_scoreboard;
   `uvm_component_utils(top_scoreboard)
 
-  uvm_analysis_imp_from_handshake_master #(handshake_tx, top_scoreboard) handshake_master_to_scoreboard;
-  uvm_analysis_imp_from_handshake_slave #(handshake_tx, top_scoreboard) handshake_slave_to_scoreboard;
+  uvm_analysis_imp_from_handshake_master #(handshake_tx, top_scoreboard) handshake_master_export;
+  uvm_analysis_imp_from_handshake_slave #(handshake_tx, top_scoreboard) handshake_slave_export;
 
   top_config m_config;
 
@@ -16,8 +16,8 @@ class top_scoreboard extends uvm_scoreboard;
     super.new(name, parent);
     if (!uvm_config_db #(top_config)::get(this, "", "config", m_config))
       `uvm_fatal(get_type_name(), "Unable to get top_config")
-    handshake_master_to_scoreboard = new("handshake_master_to_scoreboard", this);
-    handshake_slave_to_scoreboard = new("handshake_slave_to_scoreboard", this);
+    handshake_master_export = new("handshake_master_export", this);
+    handshake_slave_export = new("handshake_slave_export", this);
   endfunction : new
 
 
