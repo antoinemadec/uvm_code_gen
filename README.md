@@ -79,7 +79,6 @@ Adding `has_master_and_slave = 1` in the configuration file will
 ## 🚧 TODO
   - change seq name to something less generic ?
   - change convert2string() formatting ?
-  - code formatting ?
 
 ## 🙏 Credits
 The UVM code generation and coding guidelines are heavily inspired by [Doulos' easier_uvm](https://www.doulos.com/knowhow/systemverilog/uvm/easier-uvm/).  

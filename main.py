@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 
 import argparse
+from pathlib import Path
+import shutil
+import subprocess
 
 from uvm_code_gen import *
+
+OUTPUT_DIR = "output"
 
 
 # argument parsing
@@ -14,13 +19,14 @@ parser.add_argument("-t", "--top_env_name", help="name of top-level verif enviro
 parser.add_argument("--top_map", help="force VIP -> instance(s) mapping in top-level verif environment")
 parser.add_argument("--no_vip", action='store_true', help="don't generate VIPs")
 parser.add_argument("--no_top", action='store_true', help="don't generate top-level verif environment")
+parser.add_argument("--format", action='store_true', help="format generated SV code with verible-verilog-format")
 args = parser.parse_args()
 
 
 # VIP
 vips: list[UvmVip] = []
 for f in args.vip_config:
-    vip = UvmVip(description_file=f, output_dir="./output/vip")
+    vip = UvmVip(description_file=f, output_dir=f"{OUTPUT_DIR}/vip")
     if not args.no_vip:
         vip.write_files()
     vips.append(vip)
@@ -64,6 +70,18 @@ else:
 
 # top-level verif environment
 top = UvmTop(vips, vip_instances=vip_instances,
-             top_name=args.top_env_name, output_dir=f"./output")
+             top_name=args.top_env_name, output_dir=OUTPUT_DIR)
 if not args.no_top:
     top.write_files()
+
+
+# formatting
+if args.format:
+    if shutil.which("verible-verilog-format"):
+        file_list = [str(p) for p in Path(OUTPUT_DIR).glob("**/*.sv")]
+        cmd_line = ["verible-verilog-format"] + file_list + ["--inplace"]
+        subprocess.check_call(cmd_line)
+    else:
+        print("""ERROR: verible-verilog-format not found, please see:
+https://github.com/chipsalliance/verible/tree/master/verilog/tools/formatter\n""")
+        raise Exception("no formatter found")
