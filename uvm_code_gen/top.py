@@ -1,13 +1,14 @@
+from typing import List, Dict
+
 from .utils import *
 from .vip import UvmVip
-
 
 class UvmTop(object):
     """parse template and create UVM verification top-level environment"""
 
     def __init__(self,
-                 vips: list[UvmVip],
-                 vip_instances: dict[str, list[str]],
+                 vips: List[UvmVip],
+                 vip_instances: Dict[str, List[str]],
                  top_name: str = "top",
                  output_dir: str = "./output",
                  template_dir: str = ""):
