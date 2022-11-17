@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 import shutil
 import subprocess
+from typing import Dict, List
 
 from uvm_code_gen import *
 
@@ -24,7 +25,7 @@ args = parser.parse_args()
 
 
 # VIP
-vips: list[UvmVip] = []
+vips: List[UvmVip] = []
 for f in args.vip_config:
     vip = UvmVip(description_file=f, output_dir=f"{OUTPUT_DIR}/vip")
     if not args.no_vip:
@@ -33,7 +34,7 @@ for f in args.vip_config:
 
 
 # VIP -> instances map
-vip_instances: dict[str, list[str]] = {}
+vip_instances: Dict[str, List[str]] = {}
 if not args.top_map:
     # default map
     for v in vips:

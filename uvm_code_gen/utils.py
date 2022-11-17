@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import re
+from typing import Dict
 
 
 class Template:
@@ -27,7 +28,7 @@ class StrLists:
     def __init__(self):
         self. sl = {}
 
-    def append(self, fmt_values: dict[str, str]):
+    def append(self, fmt_values: Dict[str, str]):
         for name in fmt_values:
             self.sl.setdefault(name, [])
             string = fmt_values[name][:-1]  # remove last "\n"
@@ -56,7 +57,7 @@ def get_template_dir(template_dir=""):
     return Path(template_dir)
 
 
-def format_template_dir(template_dir_path: Path, force_empty_string= False, **fmt_values) -> dict[str, str]:
+def format_template_dir(template_dir_path: Path, force_empty_string= False, **fmt_values) -> Dict[str, str]:
     d = {}
     for template_path in template_dir_path.glob('*'):
         if template_path.is_dir():
