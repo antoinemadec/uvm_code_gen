@@ -11,7 +11,7 @@ cd "$git_top"
 dut_path="$(realpath $git_top/test/dut/fifo.sv)"
 echo "$dut_path" > ./$output_dir/bin/dut_files.f
 
-sed -i '/(rst),/d' ./$output_dir/top/tb/top_th.sv
+sed -i '/(rstn),/d' ./$output_dir/top/tb/top_th.sv
 if [[ "$output_dir" =~ "map" ]]; then
   # dual fifo
   sed -i 's/dut/dual_fifo/g' ./$output_dir/top/tb/top_th.sv

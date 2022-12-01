@@ -5,14 +5,14 @@ module top_th;
 
 
   logic clk = 0;
-  logic rst;
+  logic rstn;
 
   always #10 clk = ~clk;
 
   initial
   begin
-    rst = 0;
-    #75 rst = 1;
+    rstn = 0;
+    #75 rstn = 1;
   end
 
   ahb_if ahb_m0_if();
@@ -28,7 +28,7 @@ module top_th;
 
   dut dut(
     .clk (clk),
-    .rst (rst),
+    .rstn (rstn),
 
   );
 

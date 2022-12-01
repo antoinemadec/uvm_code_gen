@@ -5,14 +5,14 @@ module top_th;
 
 
   logic clk = 0;
-  logic rst;
+  logic rstn;
 
   always #10 clk = ~clk;
 
   initial
   begin
-    rst = 0;
-    #75 rst = 1;
+    rstn = 0;
+    #75 rstn = 1;
   end
 
   handshake_if handshake_master_if();
@@ -23,7 +23,7 @@ module top_th;
 
   dut dut(
     .clk (clk),
-    .rst (rst),
+    .rstn (rstn),
     .data (handshake_master_if.data),
     .vld (handshake_master_if.vld),
     .rdy (handshake_master_if.rdy),
