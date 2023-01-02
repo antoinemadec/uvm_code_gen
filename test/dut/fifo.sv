@@ -13,25 +13,22 @@ module fifo (
   localparam FIFO16_SIZE = 8;
 
   bit [15:0] q16[$];
+  int q16_size;
 
-  assign data_in_rdy = q16.size() <= (FIFO16_SIZE - 2);
-  assign data_out_vld = (q16.size() > 0);
-
-  always @(*) begin
-    if (q16.size() > 0)
-      data_out = q16[0];
-    else
-      data_out = 1'bX;
-  end
+  assign data_in_rdy = q16_size <= (FIFO16_SIZE - 2);
+  assign data_out_vld = q16_size > 0;
 
   always_ff @(posedge clk) begin
     if (data_in_vld && data_in_rdy) begin
       q16.push_back(data_in[31:16]);
       q16.push_back(data_in[15:0]);
+      q16_size += 2;
     end
     if (data_out_vld && data_out_rdy) begin
       void'(q16.pop_front());
+      q16_size -= 1;
     end
+    data_out = (q16_size > 0) ? q16[0]:1'bx;
   end
 
 endmodule

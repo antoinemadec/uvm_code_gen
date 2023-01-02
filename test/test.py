@@ -9,7 +9,7 @@ import filecmp
 # --------------------------------------------------------------
 # functions
 # --------------------------------------------------------------
-def bash(cmd: str | list[str], error_ok=False) -> str:
+def bash(cmd, error_ok=False) -> str:
     if type(cmd) is str:
         cmd = cmd.split()
     if error_ok:
@@ -41,7 +41,7 @@ def print_diff_files(dcmp) -> bool:
     return ok
 
 
-def run_simu(output_dir: str | Path):
+def run_simu(output_dir: str):
     global GIT_TOP
     if "fifo" in str(output_dir):
         script = f"{GIT_TOP}/test/bin/run_fifo.sh"
@@ -53,7 +53,7 @@ def run_simu(output_dir: str | Path):
     bash(f"{script} {GIT_TOP} {output_dir}")
 
 
-def gen_output_core(output_dir: str | Path, args: str):
+def gen_output_core(output_dir: str, args: str):
     global GIT_TOP
     script = f"{GIT_TOP}/test/bin/gen_output.sh"
     print(f"-- gen {output_dir}")
@@ -102,7 +102,7 @@ for example in "fifo", "noc", "handshake":
 if not ok:
     exit(1)
 
-if shutil.which("xrun"):
+if shutil.which("xrun") or shutil.which("vcs"):
     run_simu("output_fifo_config")
     run_simu("output_fifo_config_and_map")
     run_simu("output_handshake_config")

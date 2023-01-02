@@ -16,6 +16,52 @@ error() {{
   exit 1
 }}
 
+bin_exists() {{
+  if type $1 &> /dev/null; then
+    return 0
+  fi
+  return 1
+}}
+
+run_xrun() {{
+  xrun -q \
+    -access +rw -vtimescale 1ns/1ps \
+    -uvmhome $(ncroot)/tools/methodology/UVM/CDNS-1.2 \
+  {xrun_vip_incdir}
+    +incdir+$TOP_DIR \
+    +incdir+$TOP_DIR/test \
+    -F $BIN_DIR/dut_files.f \
+  {xrun_pkg_if}
+    $TOP_DIR/{top}_pkg.sv \
+    $TOP_DIR/test/{top}_test_pkg.sv \
+    $TOP_DIR/tb/{top}_th.sv \
+    $TOP_DIR/tb/{top}_tb.sv \
+    +UVM_TESTNAME={top}_test  $*
+}}
+
+run_vcs() {{
+  local UVM_PATH=$VCS_HOME/etc/uvm-1.2
+  vcs -q \
+    -l compile.log \
+    -sverilog \
+    -kdb -debug_access+all -timescale=1ns/1ps \
+    +incdir+$UVM_PATH/src \
+    +define+UVM_NO_DPI \
+    $UVM_PATH/src/uvm_pkg.sv \
+    $UVM_PATH/src/uvm_macros.svh \
+  {xrun_vip_incdir}
+    +incdir+$TOP_DIR \
+    +incdir+$TOP_DIR/test \
+    -F $BIN_DIR/dut_files.f \
+  {xrun_pkg_if}
+    $TOP_DIR/{top}_pkg.sv \
+    $TOP_DIR/test/{top}_test_pkg.sv \
+    $TOP_DIR/tb/{top}_th.sv \
+    $TOP_DIR/tb/{top}_tb.sv
+
+  ./simv -l run.log +UVM_TESTNAME={top}_test $* | tee run.log
+}}
+
 
 #--------------------------------------------------------------
 # execution
@@ -26,16 +72,10 @@ error() {{
 mkdir -p output
 cd output
 
-xrun -q \
-  -access +rw -vtimescale 1ns/1ps \
-  -uvmhome $(ncroot)/tools/methodology/UVM/CDNS-1.2 \
-{xrun_vip_incdir}
-  +incdir+$TOP_DIR \
-  +incdir+$TOP_DIR/test \
-  -F $BIN_DIR/dut_files.f \
-{xrun_pkg_if}
-  $TOP_DIR/{top}_pkg.sv \
-  $TOP_DIR/test/{top}_test_pkg.sv \
-  $TOP_DIR/tb/{top}_th.sv \
-  $TOP_DIR/tb/{top}_tb.sv \
-  +UVM_TESTNAME={top}_test  $*
+if bin_exists xrun; then
+  run_xrun $*
+elif bin_exists vcs; then
+  run_vcs $*
+else
+  error "simulator not found"
+fi

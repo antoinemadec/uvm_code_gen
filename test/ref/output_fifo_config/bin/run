@@ -16,6 +16,60 @@ error() {
   exit 1
 }
 
+bin_exists() {
+  if type $1 &> /dev/null; then
+    return 0
+  fi
+  return 1
+}
+
+run_xrun() {
+  xrun -q \
+    -access +rw -vtimescale 1ns/1ps \
+    -uvmhome $(ncroot)/tools/methodology/UVM/CDNS-1.2 \
+    +incdir+$VIP_DIR/fifo_in \
+  +incdir+$VIP_DIR/fifo_out \
+    +incdir+$TOP_DIR \
+    +incdir+$TOP_DIR/test \
+    -F $BIN_DIR/dut_files.f \
+    $VIP_DIR/fifo_in/fifo_in_pkg.sv \
+  $VIP_DIR/fifo_in/fifo_in_if.sv \
+  $VIP_DIR/fifo_out/fifo_out_pkg.sv \
+  $VIP_DIR/fifo_out/fifo_out_if.sv \
+    $TOP_DIR/top_pkg.sv \
+    $TOP_DIR/test/top_test_pkg.sv \
+    $TOP_DIR/tb/top_th.sv \
+    $TOP_DIR/tb/top_tb.sv \
+    +UVM_TESTNAME=top_test  $*
+}
+
+run_vcs() {
+  local UVM_PATH=$VCS_HOME/etc/uvm-1.2
+  vcs -q \
+    -l compile.log \
+    -sverilog \
+    -kdb -debug_access+all -timescale=1ns/1ps \
+    +incdir+$UVM_PATH/src \
+    +define+UVM_NO_DPI \
+    $UVM_PATH/src/uvm_pkg.sv \
+    $UVM_PATH/src/uvm_macros.svh \
+    +incdir+$VIP_DIR/fifo_in \
+  +incdir+$VIP_DIR/fifo_out \
+    +incdir+$TOP_DIR \
+    +incdir+$TOP_DIR/test \
+    -F $BIN_DIR/dut_files.f \
+    $VIP_DIR/fifo_in/fifo_in_pkg.sv \
+  $VIP_DIR/fifo_in/fifo_in_if.sv \
+  $VIP_DIR/fifo_out/fifo_out_pkg.sv \
+  $VIP_DIR/fifo_out/fifo_out_if.sv \
+    $TOP_DIR/top_pkg.sv \
+    $TOP_DIR/test/top_test_pkg.sv \
+    $TOP_DIR/tb/top_th.sv \
+    $TOP_DIR/tb/top_tb.sv
+
+  ./simv -l run.log +UVM_TESTNAME=top_test $* | tee run.log
+}
+
 
 #--------------------------------------------------------------
 # execution
@@ -26,20 +80,10 @@ error() {
 mkdir -p output
 cd output
 
-xrun -q \
-  -access +rw -vtimescale 1ns/1ps \
-  -uvmhome $(ncroot)/tools/methodology/UVM/CDNS-1.2 \
-  +incdir+$VIP_DIR/fifo_in \
-  +incdir+$VIP_DIR/fifo_out \
-  +incdir+$TOP_DIR \
-  +incdir+$TOP_DIR/test \
-  -F $BIN_DIR/dut_files.f \
-  $VIP_DIR/fifo_in/fifo_in_pkg.sv \
-  $VIP_DIR/fifo_in/fifo_in_if.sv \
-  $VIP_DIR/fifo_out/fifo_out_pkg.sv \
-  $VIP_DIR/fifo_out/fifo_out_if.sv \
-  $TOP_DIR/top_pkg.sv \
-  $TOP_DIR/test/top_test_pkg.sv \
-  $TOP_DIR/tb/top_th.sv \
-  $TOP_DIR/tb/top_tb.sv \
-  +UVM_TESTNAME=top_test  $*
+if bin_exists xrun; then
+  run_xrun $*
+elif bin_exists vcs; then
+  run_vcs $*
+else
+  error "simulator not found"
+fi
