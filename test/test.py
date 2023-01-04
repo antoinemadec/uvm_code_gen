@@ -106,3 +106,5 @@ if shutil.which("xrun") or shutil.which("vcs"):
     run_simu("output_fifo_config")
     run_simu("output_fifo_config_and_map")
     run_simu("output_handshake_config")
+else:
+    print("WARNING: no simulator found")
