@@ -4,7 +4,10 @@ from .utils import *
 
 
 class TransactionVariable(object):
+    """Represents a UVM transaction variable parsed from a VIP description file."""
+
     def __init__(self, definition: str):
+        """Parse the signal definition string to extract the variable name and array info."""
         self.definition = definition
         sv_code = SvCode(definition)
         self.signal_name = sv_code.get_signal_name()
@@ -12,7 +15,10 @@ class TransactionVariable(object):
 
 
 class InterfacePort(object):
+    """Represents a port on the UVM VIP interface."""
+
     def __init__(self, definition: str):
+        """Parse the port definition string to extract the signal name."""
         self.definition = definition
         self.signal_name = SvCode(definition).get_signal_name()
 
@@ -24,6 +30,7 @@ class UvmVip(object):
                  description_file: str = "",
                  output_dir: str = "./output",
                  template_dir: str = ""):
+        """Initialize the VIP, optionally parsing a description file."""
         # description
         self.vip_name = ""
         self.has_master_and_slave = False
@@ -37,6 +44,7 @@ class UvmVip(object):
         self.template_dir = get_template_dir(template_dir)
 
     def parse_description_file(self, description_file: str):
+        """Parse a VIP description file to populate vip_name, ports, clock, and transaction variables."""
         valid_keywords = ("vip_name", "has_master_and_slave", "trans_var", "if_port", "if_clock")
         with open(description_file, 'r') as f:
             for ln, line_str in enumerate(f):
@@ -73,6 +81,7 @@ class UvmVip(object):
             exit(1)
 
     def get_loop_values(self):
+        """Build and return a dict of rendered loop template strings for all VIP elements."""
         str_lists = StrLists()
         loop_dir = self.template_dir / "vip/.loop"
         port_loop_dir = loop_dir / "port"
@@ -125,6 +134,7 @@ class UvmVip(object):
         return str_lists.to_dict()
 
     def write_files(self):
+        """Render all VIP templates and write output files to the VIP output directory."""
         fmt_values = {
             "vip": self.vip_name,
             "upper_vip": self.vip_name.upper(),

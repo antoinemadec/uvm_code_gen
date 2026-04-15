@@ -12,6 +12,7 @@ class UvmTop(object):
                  top_name: str = "top",
                  output_dir: str = "./output",
                  template_dir: str = ""):
+        """Initialize the top-level environment with VIPs, instance mapping, and output settings."""
         # description
         self.vips = vips
         self.vip_instances = vip_instances
@@ -21,6 +22,7 @@ class UvmTop(object):
         self.template_dir = get_template_dir(template_dir)
 
     def get_loop_values(self, template_rel_dir: str):
+        """Build and return a dict of rendered loop template strings for a given template subdirectory."""
         str_lists = StrLists()
         vip_loop_dir = self.template_dir / template_rel_dir / ".loop/vip"
         inst_loop_dir = vip_loop_dir / "inst"
@@ -68,6 +70,7 @@ class UvmTop(object):
         return str_lists.to_dict()
 
     def write_file(self, template_path: Path, **fmt_values):
+        """Render a single template file and write it to the appropriate output path."""
         rel_path = template_path.relative_to(self.template_dir)
         parts = rel_path.parts
         if parts[0] == "top":
@@ -79,6 +82,7 @@ class UvmTop(object):
             self.output_dir / output_rel_path, **fmt_values)
 
     def write_files(self):
+        """Render all top-level environment templates and write output files."""
         fmt_values = {
             "top": self.top_name,
             "upper_top": self.top_name.upper(),
